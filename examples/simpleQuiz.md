@@ -19,8 +19,6 @@ Quiz description blablabla testing.
 * cant_go_back: False
 
 ## First Page
-This is the first page/group.
-
 ### Question
 What is the correct answer?
 * exname: Pareto
@@ -66,13 +64,6 @@ The second option is the most correct.
 * False
 
 ## Second Page
-This is the second page.
-The description has two lines and there are extra new lines.
-
-* attr43: attr43settings
-* anotherattr: anothersetting
-
-
 ### Question
 What is the correct answer?
 * exname: Pareto

@@ -3,6 +3,7 @@ import json
 import jupytext as jp
 import canvasapi as cv
 from jupytext.cli import jupytext
+from dateutil.parser import parse
 
 re_hdrtag = re.compile(r"\#{1,4}")
 hdr_dict = {"#":"quiz", "##":"group", "###":"question", "####":"subq"}
@@ -30,6 +31,19 @@ def parse_attrs(text):
         if line.startswith("*"):
             key = line[1:line.index(":")].strip(" \s")
             val = line[line.index(":") + 1:].strip(" \s")
+            if val.isnumeric():
+                val = int(val)
+            elif val == "True":
+                val = True
+            elif val == "False":
+                val = False
+            else:
+                try:
+                    datetime = parse(val)
+                    val = datetime
+                except ValueError:
+                    pass
+
             attrs[key] = val
 
     return attrs
@@ -89,7 +103,12 @@ def get_course(url, token, course_id):
     return canvas.get_course(course_id)
 
 def edit_quiz(quiz, canvas_quiz):
-    print(quiz)
+    print(canvas_quiz)
+    for group in quiz["groups"]:
+        group_attrs = [{"name": group["attrs"]["title"]}]
+        canvas_group = canvas_quiz.create_question_group(group_attrs)
+        for question in group["questions"]:
+            print(dir(canvas_group))
     return {}
 
 def upload_quiz(quiz, url, token, course_id):
@@ -98,4 +117,5 @@ def upload_quiz(quiz, url, token, course_id):
 
 def update_quiz(quiz, url, token, course_id, quiz_id):
     canvas_quiz = get_course(url, token, course_id).get_quiz(quiz_id)
+    print(dir(canvas_quiz))
     return edit_quiz(quiz, canvas_quiz)
