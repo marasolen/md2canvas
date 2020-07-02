@@ -4,6 +4,7 @@ import jupytext as jp
 import canvasapi as cv
 from jupytext.cli import jupytext
 from dateutil.parser import parse
+import urllib.parse as parseurl
 from datetime import datetime
 
 re_hdrtag = re.compile(r"\#{1,4}")
@@ -12,7 +13,51 @@ hdr_dict = {"#":"quiz", "##":"group", "###":"question", "####":"options"}
 def pprint(obj):
     print(json.dumps(obj, indent=4))
 
-def parse_value(val):
+def to_canvas(latex, inline = False):
+    """Converts Latex expression to canvas used <img> class."""
+    model = '<img class="equation_image" title="{0}" src="/equation_images/{1}" ' + \
+            'alt="Latex: {0}" data-equation-content="{0}" />' 
+    out = model.format(latex.replace("&amp;","&"), \
+                       parseurl.quote(parseurl.quote(latex.replace("&amp;","&"), \
+                       safe="()"), safe="()&"))
+    if not inline:
+        out = "</p>" + out + "<p>"
+    return out
+
+def parse_latex(text):
+    text = "<p>" + text + "</p>"
+
+    begin = 0
+    while text.find("$$", begin) != -1:
+        start = text.find("$$", begin)
+        if start - 1 >= 0 and text[start - 1] == "\\":
+            begin += 2
+            continue
+        end = text.find("$$", start + 2)
+        if end == -1:
+            break
+        
+        latex_str = to_canvas(text[start + 2:end])
+        text = text.replace(text[start:end + 2], latex_str)
+        begin += len(latex_str)
+
+    begin = 0
+    while text.find("$", begin) != -1:
+        start = text.find("$", begin)
+        if start - 1 >= 0 and text[start - 1] == "\\":
+            begin += 1
+            continue
+        end = text.find("$", start + 1)
+        if end == -1:
+            break
+        
+        latex_str = to_canvas(text[start + 1:end], True)
+        text = text.replace(text[start:end + 1], latex_str)
+        begin += len(latex_str)
+
+    return text.replace("\\", "")
+
+def parse_value(val, latex=True):
     if val.isnumeric():
         return int(val)
     elif val == "True":
@@ -25,6 +70,7 @@ def parse_value(val):
             return datetime
         except ValueError:
             pass
+
     return val
     
 
@@ -38,7 +84,7 @@ def parse_attrs(text, title_name="title", desc_name="description"):
         return attrs
 
     if "*" in text:
-        attrs[desc_name] = text[:text.index("*")].strip(" \n")
+        attrs[desc_name] = parse_latex(text[:text.index("*")].strip(" \n"))
         text = text[text.index("*"):]
     else:
         attrs[desc_name] = text.strip(" \n")
@@ -69,7 +115,7 @@ def parse_answers(q_type, options):
         for key, val in attrs.items():
             if key == "UNUSED":
                 continue
-            answer = {"answer_text": key}
+            answer = {"answer_text": parse_latex(key)}
             ans_attrs = []
 
             def check_weight(weight):
@@ -131,7 +177,7 @@ def parse_quiz(nb_file):
 
     quiz = {"attrs": {}, "groups": []}
 
-    src = nb_obj['cells'][-1]["source"]
+    src = nb_obj["cells"][-1]["source"]
     hdrs = re_hdrtag.findall(src)
     elems = re_hdrtag.split(src)[1:]
     elems = list(map(lambda el: el.strip(), elems))

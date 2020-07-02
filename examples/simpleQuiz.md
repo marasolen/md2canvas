@@ -22,14 +22,14 @@ Quiz description blablabla testing.
 
 ## General
 ### Q1
-What is the correct answer? $n^2$
+What is the correct answer? $n^2$ \$100 $$n^2$$ \$$50 for one
 
 * question-type: multiple-choice-question
 * points-possible: 1
 
 #### Options
 * Not this one: False, answer-comments: are you sure?
-* This one: True
+* This one, $n^2$: True
 * Not this one either: False
 * All of the above: False
 
