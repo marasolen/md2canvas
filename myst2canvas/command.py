@@ -98,11 +98,10 @@ def myst2canvas(url, notebook_file, token, token_file, course_id, save_settings,
     if not no_upload:
         print("Uploading quiz to Canvas with following settings:")
         print("  URL = " + url)
-        print("  Token = ****" + token[-4:])
+        print("  Token = " + token[:4] + (len(token) - 8) * "*" + token[-4:])
         print("  Course ID = " + course_id)
         if quiz_id:
             print("  Quiz ID = " + quiz_id)
             res = m2c.update_quiz(quiz, url, token, course_id, quiz_id)
         else:
             res = m2c.upload_quiz(quiz, url, token, course_id)
-        print(res)

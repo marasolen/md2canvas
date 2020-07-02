@@ -14,96 +14,57 @@ kernelspec:
 
 # Test Canvas Quiz
 Quiz description blablabla testing.
-* allowed_attempts: 3
-* scoring_policy: keep_highest
-* cant_go_back: False
 
-## First Page
-### Question
+* allowed-attempts: 3
+* scoring-policy: keep-highest
+* cant-go-back: False
+* shuffle-answers: False
+
+## General
+### Q1
+What is the correct answer? $n^2$
+
+* question-type: multiple-choice-question
+* points-possible: 1
+
+#### Options
+* Not this one: False, answer-comments: are you sure?
+* This one: True
+* Not this one either: False
+* All of the above: False
+
+### Q2
 What is the correct answer?
-* exname: Pareto
-* extype: schoice
-* exsolution: 0100
-* exshuffle: 4
+
+* question-type: multiple-choice-question
+* points-possible: 1
 
 #### Options
-* Not this one
-* This one
-* Not this one
-* All of the above
+* Not this one: False
+* This one: True
+* Not this one either: False
+* All of the above: False
 
-#### Solution
-The second option is the most correct.
-
-#### Options
-* False
-* True
-* False
-* False
-
-### Question
+### Q3
 What is the correct answer?
-* exname: Pareto
-* extype: schoice
-* exsolution: 0100
-* exshuffle: 4
+
+* question-type: multiple-choice-question
+* points-possible: 1
 
 #### Options
-* Not this one
-* This one
-* Not this one
-* All of the above
+* Not this one: False
+* This one: True
+* Not this one either: False
+* All of the above: False
 
-#### Solution
-The second option is the most correct.
-
-#### Options
-* False
-* True
-* False
-* False
-
-## Second Page
-### Question
+### Q4
 What is the correct answer?
-* exname: Pareto
-* extype: schoice
-* exsolution: 0100
-* exshuffle: 4
+
+* question-type: multiple-choice-question
+* points-possible: 1
 
 #### Options
-* Not this one
-* This one
-* Not this one
-* All of the above
-
-#### Solution
-The second option is the most correct.
-
-#### Options
-* False
-* True
-* False
-* False
-
-### Question
-What is the correct answer?
-* exname: Pareto
-* extype: schoice
-* exsolution: 0100
-* exshuffle: 4
-
-#### Options
-* Not this one
-* This one
-* Not this one
-* All of the above
-
-#### Solution
-The second option is the most correct.
-
-#### Options
-* False
-* True
-* False
-* False
+* Not this one: False
+* This one: True
+* Not this one either: False
+* All of the above: False
