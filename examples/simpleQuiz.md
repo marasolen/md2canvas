@@ -68,6 +68,10 @@ Match the same numbers to each other
 * 4: 4
 
 ### Q6
+Just taking a break.
+
+* question-type: multiple-answer-question
+* points-possible: 1
 
 ### Q7
 What is the correct answer?

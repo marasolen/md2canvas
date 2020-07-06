@@ -2,7 +2,8 @@ import json
 import click
 from os import path
 from configparser import ConfigParser
-import myst2canvas.myst2canvas as m2c
+import myst2canvas.myst2json as m2j
+import myst2canvas.json2canvas as j2c
 
 NOT_SET = "NOT_SET"
 
@@ -89,7 +90,7 @@ def myst2canvas(url, notebook_file, token, token_file, course_id, save_settings,
                 return
 
     print("Parsing the quiz at " + notebook_file)
-    quiz = m2c.parse_quiz(notebook_file)
+    quiz = m2j.parse_quiz(notebook_file)
 
     if dump:
         with open(dump, "w") as f:
@@ -102,6 +103,6 @@ def myst2canvas(url, notebook_file, token, token_file, course_id, save_settings,
         print("  Course ID = " + course_id)
         if quiz_id:
             print("  Quiz ID = " + quiz_id)
-            res = m2c.update_quiz(quiz, url, token, course_id, quiz_id)
+            j2c.update_quiz(quiz, url, token, course_id, quiz_id)
         else:
-            res = m2c.upload_quiz(quiz, url, token, course_id)
+            j2c.upload_quiz(quiz, url, token, course_id)
