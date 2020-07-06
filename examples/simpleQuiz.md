@@ -22,42 +22,54 @@ Quiz description blablabla testing.
 
 ## General
 ### Q1
-What is the correct answer? $n^2$ \$100 $$n^2$$ \$$50 for one
+What is the correct answer of $7^2$?
 
-* question-type: multiple-choice-question
+* question-type: calculated-question
 * points-possible: 1
 
 #### Options
-* Not this one: False, answer-comments: are you sure?
-* This one, $n^2$: True
-* Not this one either: False
-* All of the above: False
+* 48: False; answer-comments: are you sure?
+* 49: True
+* 50: False
+* None of the above: False
 
 ### Q2
-What is the correct answer?
+Write your name
 
-* question-type: multiple-choice-question
+* question-type: essay-question
 * points-possible: 1
-
-#### Options
-* Not this one: False
-* This one: True
-* Not this one either: False
-* All of the above: False
 
 ### Q3
-What is the correct answer?
+Upload a file, any file
 
-* question-type: multiple-choice-question
+* question-type: file-upload-questions
 * points-possible: 1
-
-#### Options
-* Not this one: False
-* This one: True
-* Not this one either: False
-* All of the above: False
 
 ### Q4
+Fill in the blanks [A], [B], [C] with a, b, c (the last one could also be d or e)
+
+* question-type: fill-in-multiple-blanks-question
+
+#### Options
+* A: a
+* B: b
+* C: c, d, e
+
+### Q5
+Match the same numbers to each other
+
+* question-type: matching-question
+* points-possible: 1
+
+#### Options
+* 1: 1; matching-answer-incorrect-matches: 5, 6, 7, 8
+* 2: 2
+* 3: 3
+* 4: 4
+
+### Q6
+
+### Q7
 What is the correct answer?
 
 * question-type: multiple-choice-question
@@ -68,3 +80,36 @@ What is the correct answer?
 * This one: True
 * Not this one either: False
 * All of the above: False
+
+### Q8
+What is the correct answer?
+
+* question-type: multiple-dropdowns-question
+* points-possible: 1
+
+### Q9
+What is the correct answer?
+
+* question-type: numerical-question
+* points-possible: 1
+
+### Q10
+What is the correct answer?
+
+* question-type: short-answer-question
+* points-possible: 1
+
+### Q11
+What is the correct answer?
+
+* question-type: text-only-question
+* points-possible: 1
+
+### Q12
+Select true
+
+* question-type: true-false-question
+* points-possible: 1
+
+#### Correct Answer
+true
