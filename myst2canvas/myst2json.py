@@ -158,7 +158,7 @@ def parse_attrs(text, title_name="title", desc_name="description"):
         attrs[desc_name] = parse_latex(text[:text.index("*")].strip(" \n"))
         text = text[text.index("*"):]
     else:
-        attrs[desc_name] = text.strip(" \n")
+        attrs[desc_name] = parse_latex(text.strip(" \n"))
         return attrs
 
     for line in text.split("\n"):
@@ -205,6 +205,7 @@ def parse_calculated_question(options):
     [obj]
         parsed answers
     """
+    print("WARNING: API does not support calculated/formula questions, converting to multiple choice")
     return parse_multiple_choice_question(options)
 
 def parse_fill_in_multiple_blanks_question(options):
@@ -335,6 +336,37 @@ def parse_numerical_question(options):
     """
     return []
 
+def parse_true_false_question(options):
+    """
+    Parse true/false question answers.
+
+    Parameters
+    ----------
+    options: str
+        metadata and answer list
+
+    Returns
+    -------
+    [obj]
+        parsed answers
+    """
+    print("WARNING: API does not support true/false questions, converting to multiple choice")
+    attrs = parse_attrs(options, desc_name="answer")
+    true_ans = {
+        "answer_text": "True",
+        "answer_weight": 0
+    }
+    false_ans = {
+        "answer_text": "False",
+        "answer_weight": 0
+    }
+    if "true" in attrs["answer"].lower():
+        true_ans["answer_weight"] = 100
+    else:
+        false_ans["answer_weight"] = 100
+
+    return [true_ans, false_ans]
+
 def parse_question(text, question_arr):
     """
     Parse Question.
@@ -360,7 +392,6 @@ def parse_question(text, question_arr):
 
     options = question_arr[0][1]
     if q_type == "calculated_question":
-        print("WARNING: API does not support calculated/formula questions, converting to multiple choice")
         attrs["answers"] = parse_calculated_question(options)
     elif q_type == "fill_in_multiple_blanks_question":
         attrs["answers"] = parse_fill_in_multiple_blanks_question(options)
@@ -375,8 +406,7 @@ def parse_question(text, question_arr):
     elif q_type == "numerical_question":
         attrs["answers"] = parse_numerical_question(options)
     elif q_type == "true_false_question":
-        print("WARNING: API does not support true/false questions, converting to multiple choice")
-        attrs["answers"] = parse_multiple_choice_question(options)
+        attrs["answers"] = parse_true_false_question(options)
         attrs["question_type"] = "multiple_choice_question"
 
     return attrs

@@ -31,7 +31,7 @@ What is the correct answer of $7^2$?
 * 48: False; answer-comments: are you sure?
 * 49: True
 * 50: False
-* None of the above: False
+* 51: False
 
 ### Q2
 Write your name
