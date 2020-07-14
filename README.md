@@ -1,6 +1,11 @@
 # myst2canvas
 Convert MyST markdown to Canvas quizzes.
 
+## Installation
+```
+pip install git+https://github.com/hcolclou/myst2canvas
+```
+
 ## Usage
 Usage: myst2canvas [OPTIONS] NOTEBOOK_FILE
 
