@@ -4,6 +4,7 @@ from os import path
 from configparser import ConfigParser
 import myst2canvas.myst2json as m2j
 import myst2canvas.json2canvas as j2c
+import myst2canvas.util as ut
 
 NOT_SET = "NOT_SET"
 
@@ -25,11 +26,16 @@ NOT_SET = "NOT_SET"
               help="File to dump JSON string to.")
 @click.option("-n", "--no-upload", "no_upload", flag_value=True,
               default=False, help="Set flag to stop uploading of quiz.")
+@click.option("-h", "--hush", "hush", flag_value=True,
+              default=False, help="Set flag to stop printing other than warnings and errors.")
 def myst2canvas(url, notebook_file, token, token_file, course_id, save_settings,
-                quiz_id, dump, no_upload):
+                quiz_id, dump, no_upload, hush):
     """
     Parse file into quiz and upload to Canvas.
     """
+    # Set printing settings
+    ut.hush = hush
+
     # Check argument validity
     if not notebook_file or not path.exists(notebook_file):
         print("Invalid notebook file.")
@@ -89,7 +95,7 @@ def myst2canvas(url, notebook_file, token, token_file, course_id, save_settings,
                 print("No course ID given or in config file.")
                 return
 
-    print("Parsing the quiz at " + notebook_file)
+    ut.sprint("Parsing the quiz at " + notebook_file)
     quiz = m2j.parse_quiz(notebook_file)
 
     if dump:
@@ -97,12 +103,12 @@ def myst2canvas(url, notebook_file, token, token_file, course_id, save_settings,
             json.dump(f, quiz)
 
     if not no_upload:
-        print("Uploading quiz to Canvas with following settings:")
-        print("  URL = " + url)
-        print("  Token = " + token[:4] + (len(token) - 8) * "*" + token[-4:])
-        print("  Course ID = " + course_id)
+        ut.sprint("Uploading quiz to Canvas with following settings:")
+        ut.sprint("  URL = " + url)
+        ut.sprint("  Token = " + token[:4] + (len(token) - 8) * "*" + token[-4:])
+        ut.sprint("  Course ID = " + course_id)
         if quiz_id:
-            print("  Quiz ID = " + quiz_id)
+            ut.sprint("  Quiz ID = " + quiz_id)
             j2c.update_quiz(quiz, url, token, course_id, quiz_id)
         else:
             j2c.upload_quiz(quiz, url, token, course_id)

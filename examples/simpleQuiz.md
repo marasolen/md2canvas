@@ -13,7 +13,7 @@ kernelspec:
 ---
 
 # Test Canvas Quiz
-Quiz description blablabla testing.
+A test quiz with all supported question types and some sample metadata.
 
 * allowed-attempts: 3
 * scoring-policy: keep-highest
@@ -22,58 +22,43 @@ Quiz description blablabla testing.
 
 ## General
 ### Q1
-What is the correct answer of $7^2$?
-
-* question-type: calculated-question
-* points-possible: 1
-
-#### Options
-* 48: False; answer-comments: are you sure?
-* 49: True
-* 50: False
-* 51: False
-
-### Q2
-Write your name
+Write your name here!
 
 * question-type: essay-question
 * points-possible: 1
 
-### Q3
-Upload a file, any file
+### Q2
+Upload a file, any file (note this will not work in preview mode)!
 
-* question-type: file-upload-questions
+* question-type: file-upload-question
 * points-possible: 1
 
-### Q4
-Fill in the blanks [A], [B], [C] with a, b, c (the last one could also be d or e)
-
-* question-type: fill-in-multiple-blanks-question
-
-#### Options
-* A: a
-* B: b
-* C: c, d, e
-
-### Q5
+### Q3
 Match the same numbers to each other
 
 * question-type: matching-question
 * points-possible: 1
 
 #### Options
-* 1: 1; matching-answer-incorrect-matches: 5, 6, 7, 8
-* 2: 2
-* 3: 3
-* 4: 4
+* 1: 1; matching-answer-incorrect-matches: 5, 6
+* 2: 2; matching-answer-incorrect-matches: 7, 8
+* 3: 3; matching-answer-incorrect-matches: 9
+* 4: 4; matching-answer-incorrect-matches: 10
 
-### Q6
-Just taking a break.
+### Q4
+Choose odd numbers.
 
-* question-type: multiple-answer-question
+* question-type: multiple-answers-question
 * points-possible: 1
 
-### Q7
+#### Answers
+* 1: True
+* 2: False
+* 3: True
+* 4: False
+* 5: True
+
+### Q5
 What is the correct answer?
 
 * question-type: multiple-choice-question
@@ -85,35 +70,66 @@ What is the correct answer?
 * Not this one either: False
 * All of the above: False
 
-### Q8
-What is the correct answer?
-
-* question-type: multiple-dropdowns-question
-* points-possible: 1
-
-### Q9
-What is the correct answer?
-
-* question-type: numerical-question
-* points-possible: 1
-
-### Q10
-What is the correct answer?
+### Q6
+Type "something" or "nothing".
 
 * question-type: short-answer-question
 * points-possible: 1
 
-### Q11
-What is the correct answer?
+#### Options
+* something
+* nothing
+
+### Q7
+Take a break!
 
 * question-type: text-only-question
-* points-possible: 1
 
-### Q12
-Select true
+### Q8
+Select true to get full marks.
 
 * question-type: true-false-question
 * points-possible: 1
 
 #### Correct Answer
 true
+
+## Numerical Question Group
+* pick-count: 1
+* question-points: 3
+
+### Q9a
+What is $2 + 2$?
+
+* question-type: numerical-question
+
+#### Answers
+* 4
+* 4, 0.1
+* 4, 0.1: exact-answer
+* 3.9, 4.1: range-answer
+* 4, 2: precision-answer
+
+### Q9b
+What is $3 + 2$?
+
+* question-type: numerical-question
+
+#### Answers
+* 5
+* 5, 0.1
+* 5, 0.1: exact-answer
+* 4.9, 5.1: range-answer
+* 5, 2: precision-answer
+
+### Q9c
+Evaluate the following expression. $$4 + 2$$
+
+* question-type: numerical-question
+
+#### Answers
+* 6
+* 6, 0.1
+* 6, 0.1: exact-answer
+* 5.9, 6.1: range-answer
+* 6, 2: precision-answer

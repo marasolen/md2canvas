@@ -5,24 +5,10 @@ from jupytext.cli import jupytext
 from dateutil.parser import parse
 import urllib.parse as parseurl
 from datetime import datetime
+import myst2canvas.util as ut
 
 re_hdrtag = re.compile(r"\#{1,4}")
 hdr_dict = {"#":"quiz", "##":"group", "###":"question", "####":"options"}
-
-def pprint(obj):
-    """
-    Print JSON object in an easy to read format.
-
-    Parameters
-    ----------
-    obj: obj
-        object to print
-
-    Returns
-    -------
-    None
-    """
-    print(json.dumps(obj, indent=4))
 
 def to_canvas(latex, inline = False):
     """
@@ -191,12 +177,15 @@ def parse_weight(weight):
     else:
         return -1
 
-def parse_calculated_question(options):
+def parse_answerless_question(q_name, options):
     """
-    Parse calculated question answers.
+    Function for dict, takes place for question types with no answers.
 
     Parameters
     ----------
+    q_name: str
+        name of the question
+    
     options: str
         metadata and answer list
 
@@ -205,31 +194,17 @@ def parse_calculated_question(options):
     [obj]
         parsed answers
     """
-    print("WARNING: API does not support calculated/formula questions, converting to multiple choice")
-    return parse_multiple_choice_question(options)
+    return [], {}
 
-def parse_fill_in_multiple_blanks_question(options):
-    """
-    Parse fill in multiple blanks question answers.
-
-    Parameters
-    ----------
-    options: str
-        metadata and answer list
-
-    Returns
-    -------
-    [obj]
-        parsed answers
-    """
-    return []
-
-def parse_matching_question(options):
+def parse_matching_question(q_name, options):
     """
     Parse matching question answers.
 
     Parameters
     ----------
+    q_name: str
+        name of the question
+    
     options: str
         metadata and answer list
 
@@ -238,30 +213,41 @@ def parse_matching_question(options):
     [obj]
         parsed answers
     """
-    return []
+    answers = []
+    attrs = parse_attrs(options, title_name="UNUSED", desc_name="UNUSED")
+    distractors = []
+    for key, val in attrs.items():
+        if key == "UNUSED":
+            continue
+        answer = {"answer_match_left": key}
+        ans_attrs = []
 
-def parse_multiple_answers_question(options):
+        arr = val.split(";")
+        answer["answer_match_right"] = arr[0].strip(" ")
+        ans_attrs = arr[1:]
+
+        for ans_attr in ans_attrs:
+            ans_key = ans_attr[1:ans_attr.index(":")].strip(" ").replace("-", "_")
+            ans_val = ans_attr[ans_attr.index(":") + 1:].strip(" ").replace("-", "_")
+            if ans_key == "matching_answer_incorrect_matches":
+                distractors += ans_val.split(",")
+                continue
+            answer[ans_key] = parse_value(ans_val)
+
+        answers += [answer]
+
+    return answers, {"matching_answer_incorrect_matches":
+                     "\n".join(list(map(lambda x : x.strip(" "), distractors)))}
+
+def parse_multiple_answers_question(q_name, options):
     """
     Parse multiple answers question answers.
 
     Parameters
     ----------
-    options: str
-        metadata and answer list
-
-    Returns
-    -------
-    [obj]
-        parsed answers
-    """
-    return []
-
-def parse_multiple_choice_question(options):
-    """
-    Parse multiple choice question answers.
-
-    Parameters
-    ----------
+    q_name: str
+        name of the question
+    
     options: str
         metadata and answer list
 
@@ -275,14 +261,8 @@ def parse_multiple_choice_question(options):
     for key, val in attrs.items():
         if key == "UNUSED":
             continue
-        answer = {"answer_text": parse_latex(key)}
+        answer = {"answer_text": key}
         ans_attrs = []
-
-        def check_weight(weight):
-            if weight == -1 or (weight != 0 and weight != 100):
-                print("Invalid answer weight for multiple choice question: " + str(val))
-                return False
-            return True
 
         if isinstance(val, str):
             arr = val.split(";")
@@ -291,8 +271,6 @@ def parse_multiple_choice_question(options):
             val = parse_value(weight)
 
         weight = parse_weight(val)
-        if not check_weight(weight):
-            continue
         answer["answer_weight"] = weight
 
         for ans_attr in ans_attrs:
@@ -302,14 +280,17 @@ def parse_multiple_choice_question(options):
 
         answers += [answer]
 
-    return answers
+    return answers, {}
 
-def parse_multiple_dropdowns_question(options):
+def parse_multiple_choice_question(q_name, options):
     """
-    Parse multiple dropdowns question answers.
+    Parse multiple choice question answers.
 
     Parameters
     ----------
+    q_name: str
+        name of the question
+    
     options: str
         metadata and answer list
 
@@ -318,14 +299,44 @@ def parse_multiple_dropdowns_question(options):
     [obj]
         parsed answers
     """
-    return []
+    answers, extra = parse_multiple_answers_question(q_name, options)
 
-def parse_numerical_question(options):
+    def check_weight(weight):
+        if weight == -1 or (weight != 0 and weight != 100):
+            print("Invalid answer weight for multiple choice question: " + str(weight))
+            return False
+        return True
+
+    found_true = False
+    final_answers = []
+    for answer in answers:
+        weight = answer["answer_weight"]
+        if not check_weight(weight):
+            print("WARNING: invalid weight in answer list for question " + q_name)
+            continue
+
+        if weight > 0:
+            if found_true:
+                print("WARNING: multiple correct answers in question " + q_name +
+                ", consider changing to multiple answers questions")
+                continue
+            else:
+                found_true = True
+        
+        final_answers += [answer]
+
+    return final_answers, extra
+    
+
+def parse_numerical_question(q_name, options):
     """
     Parse numerical question answers.
 
     Parameters
     ----------
+    q_name: str
+        name of the question
+    
     options: str
         metadata and answer list
 
@@ -334,14 +345,83 @@ def parse_numerical_question(options):
     [obj]
         parsed answers
     """
-    return []
+    answers = []
+    for line in options.split("\n"):
+        if line.startswith("*"):
+            v1 = 0
+            v2 = 0
+            answer = {"answer_text": "", "answer_weight": 100}
+            text = line[1:].strip(" ")
+            if "," not in text:
+                if ":" in text:
+                    print("WARNING: numerical answer has one value but has answer type, " +
+                          "only one of these is allowed")
+                v1 = float(text)
+                answer["numerical_answer_type"] = "exact_answer"
+            elif ":" not in text:
+                ind = text.index(",")
+                v1 = float(text[:ind].strip(" "))
+                v2 = float(text[ind + 1:].strip(" "))
+                answer["numerical_answer_type"] = "exact_answer"
+            else:
+                ind = text.index(":")
+                vals = text[:ind]
+                answer["numerical_answer_type"] = text[ind + 1:].strip(" ").replace("-", "_")
+                ind = vals.index(",")
+                v1 = float(vals[:ind].strip(" "))
+                v2 = float(vals[ind + 1:].strip(" "))
 
-def parse_true_false_question(options):
+            if answer["numerical_answer_type"] == "exact_answer":
+                answer["answer_exact"] = v1
+                answer["answer_error_margin"] = v2
+            elif answer["numerical_answer_type"] == "range_answer":
+                answer["answer_range_start"] = v1
+                answer["answer_range_end"] = v2
+            elif answer["numerical_answer_type"] == "precision_answer":
+                answer["answer_approximate"] = v1
+                answer["answer_precision"] = v2
+            else:
+                print("WARNING: numerical answer type not supported: " + answer["numerical_answer_type"])
+                continue
+
+            answers += [answer]
+                    
+    return answers, {}
+
+def parse_short_answer_question(q_name, options):
+    """
+    Parse short answer question answers.
+
+    Parameters
+    ----------
+    q_name: str
+        name of the question
+    
+    options: str
+        metadata and answer list
+
+    Returns
+    -------
+    [obj]
+        parsed answers
+    """
+    answers = []
+    for line in options.split("\n"):
+        if line.startswith("*"):
+            text = line[1:].strip(" ")
+            answers += [{"answer_text": text}]
+                    
+    return answers, {}
+
+def parse_true_false_question(q_name, options):
     """
     Parse true/false question answers.
 
     Parameters
     ----------
+    q_name: str
+        name of the question
+    
     options: str
         metadata and answer list
 
@@ -350,7 +430,8 @@ def parse_true_false_question(options):
     [obj]
         parsed answers
     """
-    print("WARNING: API does not support true/false questions, converting to multiple choice")
+    print("WARNING: API does not support true/false questions, converting " +
+          q_name  + " to multiple choice")
     attrs = parse_attrs(options, desc_name="answer")
     true_ans = {
         "answer_text": "True",
@@ -365,7 +446,20 @@ def parse_true_false_question(options):
     else:
         false_ans["answer_weight"] = 100
 
-    return [true_ans, false_ans]
+    return [true_ans, false_ans], {}
+
+
+supp_q_types = {"essay_question": {"parser": parse_answerless_question}, 
+                "file_upload_question": 
+                    {"parser": parse_answerless_question,
+                     "warning": "WARNING: File Upload questions do not work in preview mode."}, 
+                "matching_question": {"parser": parse_matching_question},
+                "multiple_answers_question": {"parser": parse_multiple_answers_question}, 
+                "multiple_choice_question": {"parser": parse_multiple_choice_question},
+                "numerical_question": {"parser": parse_numerical_question},
+                "short_answer_question": {"parser": parse_short_answer_question}, 
+                "text_only_question": {"parser": parse_answerless_question}, 
+                "true_false_question": {"parser": parse_true_false_question}}
 
 def parse_question(text, question_arr):
     """
@@ -384,30 +478,25 @@ def parse_question(text, question_arr):
     obj
         parsed question
     """
-    print(text)
     attrs = parse_attrs(text, title_name="question_name", desc_name="question_text")
+    if "question_type" not in attrs:
+        print("WARNING: question does not have question-type, not including question")
+        return None
+
     q_type = attrs["question_type"]
     if len(question_arr) == 0:
         return attrs
 
     options = question_arr[0][1]
-    if q_type == "calculated_question":
-        attrs["answers"] = parse_calculated_question(options)
-    elif q_type == "fill_in_multiple_blanks_question":
-        attrs["answers"] = parse_fill_in_multiple_blanks_question(options)
-    elif q_type == "matching_question":
-        attrs["answers"] = parse_matching_question(options)
-    elif q_type == "multiple_answers_question":
-        attrs["answers"] = parse_multiple_answers_question(options)
-    elif q_type == "multiple_choice_question":
-        attrs["answers"] = parse_multiple_choice_question(options)
-    elif q_type == "multiple_dropdowns_question":
-        attrs["answers"] = parse_multiple_dropdowns_question(options)
-    elif q_type == "numerical_question":
-        attrs["answers"] = parse_numerical_question(options)
-    elif q_type == "true_false_question":
-        attrs["answers"] = parse_true_false_question(options)
-        attrs["question_type"] = "multiple_choice_question"
+    if q_type not in supp_q_types:
+        print("WARNING: unsupported question type of " + q_type)
+        return None
+
+    if "warning" in supp_q_types[q_type]:
+        ut.sprint(supp_q_types[q_type]["warning"])
+        
+    attrs["answers"], extra = supp_q_types[q_type]["parser"](attrs["question_name"], options)
+    attrs = {**attrs, **extra}
 
     return attrs
 
@@ -458,7 +547,7 @@ def parse_quiz(nb_file):
         parsed quiz
     """
     if nb_file.endswith(".json"):
-        pprint(nb_file)
+        ut.pprint(nb_file)
         return json.load(nb_file)
     elif nb_file.endswith(".ipynb"):
         jupytext(args=[str(nb_file), "--to", "md:myst"])
@@ -483,7 +572,7 @@ def parse_quiz(nb_file):
             quiz["groups"].append(group)
         else:
             continue
-
-    pprint(quiz)
+    
+    ut.pprint(quiz)
 
     return quiz
