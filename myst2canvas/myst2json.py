@@ -1,3 +1,4 @@
+import os
 import re
 import json
 import jupytext as jp
@@ -6,6 +7,10 @@ from dateutil.parser import parse
 import urllib.parse as parseurl
 from datetime import datetime
 import myst2canvas.util as ut
+import markdown
+from bs4 import BeautifulSoup
+
+md = markdown.Markdown()
 
 re_hdrtag = re.compile(r"\#{1,4}")
 hdr_dict = {"#":"quiz", "##":"group", "###":"question", "####":"options"}
@@ -36,9 +41,9 @@ def to_canvas(latex, inline = False):
         out = "</p>" + out + "<p>"
     return out
 
-def parse_latex(text):
+def parse_md_text(text):
     """
-    Parse latex from text.
+    Parse markdown into HTML, also check for latex.
 
     Parameters
     ----------
@@ -49,8 +54,26 @@ def parse_latex(text):
     -------
     str
         parsed text with Canvas latex
+
+    [str]
+        list of paths to images linked from this text
     """
-    text = "<p>" + text + "</p>"
+    text = md.convert(text)
+
+    html = BeautifulSoup(text, 'html.parser')
+    image_paths = []
+
+    for image in html.find_all("img"):
+        image_name = image.get("src")
+        image_path = os.path.join(file_dir, image.get("src"))
+        image_path = os.path.abspath(image_path)
+
+        if os.path.islink(image_path): continue
+        if not os.path.exists(image_path):
+            ut.sprint("WARNING: image was not a link and does not exist on this computer: " +
+                    image_path)
+
+        image_paths += [{"name": image_name, "path": image_path}]
 
     begin = 0
     while text.find("$$", begin) != -1:
@@ -80,7 +103,7 @@ def parse_latex(text):
         text = text.replace(text[start:end + 1], latex_str)
         begin += len(latex_str)
 
-    return text.replace("\\", "")
+    return text.replace("\\", ""), image_paths
 
 def parse_value(val):
     """
@@ -131,6 +154,10 @@ def parse_attrs(text, title_name="title", desc_name="description"):
     -------
     obj
         parsed metadata
+
+    [str]
+        list of paths to images linked from this text
+    
     """
     attrs = {}
     if "\n" in text:
@@ -138,14 +165,14 @@ def parse_attrs(text, title_name="title", desc_name="description"):
         text = text[text.index("\n") + 1:]
     else:
         attrs[title_name] = text.strip(" ")
-        return attrs
+        return attrs, []
 
     if "*" in text:
-        attrs[desc_name] = parse_latex(text[:text.index("*")].strip(" \n"))
+        attrs[desc_name], image_paths = parse_md_text(text[:text.index("*")].strip(" \n"))
         text = text[text.index("*"):]
     else:
-        attrs[desc_name] = parse_latex(text.strip(" \n"))
-        return attrs
+        attrs[desc_name], image_paths = parse_md_text(text.strip(" \n"))
+        return attrs, image_paths
 
     for line in text.split("\n"):
         if line.startswith("*"):
@@ -153,7 +180,7 @@ def parse_attrs(text, title_name="title", desc_name="description"):
             val = line[line.index(":") + 1:].strip(" ").replace("-", "_")
             attrs[key] = parse_value(val)
 
-    return attrs
+    return attrs, image_paths
 
 def parse_weight(weight):
     """
@@ -193,6 +220,9 @@ def parse_answerless_question(q_name, options):
     -------
     [obj]
         parsed answers
+    
+    obj 
+        extra attributes to add to the question
     """
     return [], {}
 
@@ -212,9 +242,14 @@ def parse_matching_question(q_name, options):
     -------
     [obj]
         parsed answers
+    
+    obj 
+        extra attributes to add to the question
     """
     answers = []
-    attrs = parse_attrs(options, title_name="UNUSED", desc_name="UNUSED")
+    extra = {}
+    attrs, extra["image_paths"] = parse_attrs(options, title_name="UNUSED", desc_name="UNUSED")
+    
     distractors = []
     for key, val in attrs.items():
         if key == "UNUSED":
@@ -236,8 +271,9 @@ def parse_matching_question(q_name, options):
 
         answers += [answer]
 
-    return answers, {"matching_answer_incorrect_matches":
-                     "\n".join(list(map(lambda x : x.strip(" "), distractors)))}
+    extra["matching_answer_incorrect_matches"] = "\n".join(list(map(lambda x : x.strip(" "), distractors)))
+
+    return answers, extra
 
 def parse_multiple_answers_question(q_name, options):
     """
@@ -255,9 +291,13 @@ def parse_multiple_answers_question(q_name, options):
     -------
     [obj]
         parsed answers
+    
+    obj 
+        extra attributes to add to the question
     """
     answers = []
-    attrs = parse_attrs(options, title_name="UNUSED", desc_name="UNUSED")
+    extra = {}
+    attrs, extra["image_paths"] = parse_attrs(options, title_name="UNUSED", desc_name="UNUSED")
     for key, val in attrs.items():
         if key == "UNUSED":
             continue
@@ -280,7 +320,7 @@ def parse_multiple_answers_question(q_name, options):
 
         answers += [answer]
 
-    return answers, {}
+    return answers, extra
 
 def parse_multiple_choice_question(q_name, options):
     """
@@ -298,6 +338,9 @@ def parse_multiple_choice_question(q_name, options):
     -------
     [obj]
         parsed answers
+    
+    obj 
+        extra attributes to add to the question
     """
     answers, extra = parse_multiple_answers_question(q_name, options)
 
@@ -344,6 +387,9 @@ def parse_numerical_question(q_name, options):
     -------
     [obj]
         parsed answers
+    
+    obj 
+        extra attributes to add to the question
     """
     answers = []
     for line in options.split("\n"):
@@ -404,6 +450,9 @@ def parse_short_answer_question(q_name, options):
     -------
     [obj]
         parsed answers
+    
+    obj 
+        extra attributes to add to the question
     """
     answers = []
     for line in options.split("\n"):
@@ -429,10 +478,12 @@ def parse_true_false_question(q_name, options):
     -------
     [obj]
         parsed answers
+    
+    obj 
+        extra attributes to add to the question
     """
-    print("WARNING: API does not support true/false questions, converting " +
-          q_name  + " to multiple choice")
-    attrs = parse_attrs(options, desc_name="answer")
+    extra = {}
+    attrs, extra["image_paths"] = parse_attrs(options, desc_name="answer")
     true_ans = {
         "answer_text": "True",
         "answer_weight": 0
@@ -446,20 +497,22 @@ def parse_true_false_question(q_name, options):
     else:
         false_ans["answer_weight"] = 100
 
-    return [true_ans, false_ans], {}
+    return [true_ans, false_ans], extra
 
 
 supp_q_types = {"essay_question": {"parser": parse_answerless_question}, 
                 "file_upload_question": 
                     {"parser": parse_answerless_question,
-                     "warning": "WARNING: File Upload questions do not work in preview mode."}, 
+                     "warning": "File Upload questions do not work in preview mode."}, 
                 "matching_question": {"parser": parse_matching_question},
                 "multiple_answers_question": {"parser": parse_multiple_answers_question}, 
                 "multiple_choice_question": {"parser": parse_multiple_choice_question},
                 "numerical_question": {"parser": parse_numerical_question},
                 "short_answer_question": {"parser": parse_short_answer_question}, 
                 "text_only_question": {"parser": parse_answerless_question}, 
-                "true_false_question": {"parser": parse_true_false_question}}
+                "true_false_question": 
+                    {"parser": parse_true_false_question,
+                     "warning": "API does not support true/false questions, converting to multiple choice"}}
 
 def parse_question(text, question_arr):
     """
@@ -478,7 +531,7 @@ def parse_question(text, question_arr):
     obj
         parsed question
     """
-    attrs = parse_attrs(text, title_name="question_name", desc_name="question_text")
+    attrs, image_paths = parse_attrs(text, title_name="question_name", desc_name="question_text")
     if "question_type" not in attrs:
         print("WARNING: question does not have question-type, not including question")
         return None
@@ -493,9 +546,10 @@ def parse_question(text, question_arr):
         return None
 
     if "warning" in supp_q_types[q_type]:
-        ut.sprint(supp_q_types[q_type]["warning"])
+        ut.sprint("WARNING: " + supp_q_types[q_type]["warning"])
         
     attrs["answers"], extra = supp_q_types[q_type]["parser"](attrs["question_name"], options)
+    extra["image_paths"] = image_paths
     attrs = {**attrs, **extra}
 
     return attrs
@@ -517,7 +571,7 @@ def parse_group(text, group_arr):
     obj
         parsed group
     """
-    attrs = parse_attrs(text, title_name="name")
+    attrs, _ = parse_attrs(text, title_name="name")
     group = {"attrs": attrs, "questions": []}
 
     for index, (obj_type, text) in enumerate(group_arr):
@@ -546,6 +600,9 @@ def parse_quiz(nb_file):
     obj
         parsed quiz
     """
+    global file_dir
+    file_dir = os.path.dirname(os.path.abspath(nb_file))
+    
     if nb_file.endswith(".json"):
         ut.pprint(nb_file)
         return json.load(nb_file)
@@ -563,7 +620,8 @@ def parse_quiz(nb_file):
     flat_tree = list(zip( hdrs, elems))
     for index, (obj_type, text) in enumerate(flat_tree):
         if hdr_dict[obj_type] == "quiz":
-            attrs = parse_attrs(text)
+            attrs, image_paths = parse_attrs(text)
+            attrs["image_paths"] = image_paths
             quiz["attrs"] = attrs
 
         elif hdr_dict[obj_type] == "group":
@@ -572,7 +630,5 @@ def parse_quiz(nb_file):
             quiz["groups"].append(group)
         else:
             continue
-    
-    ut.pprint(quiz)
 
     return quiz
