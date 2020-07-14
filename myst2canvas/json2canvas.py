@@ -1,17 +1,50 @@
 import canvasapi as cv
 import myst2canvas.util as ut
 
-def edit_quiz(quiz, canvas_quiz):
+def update_media(url, folder, media):
+    """
+    Add media to folder if it doesn't already exist.
+
+    Parameters
+    ----------
+    url: str
+        Canvas URL
+
+    folder: obj
+        Canvas course to get folder from
+
+    quiz_id: str
+        numerical ID of quiz
+
+    Returns
+    -------
+    int
+        ID of folder for given quiz
+    """
+    folder.upload(media)
+
+    for f in folder.get_files():
+        return url + "/files/" + str(f.id) + "/download?wrap=1"
+
+    return media + "(failed to load)"
+
+def edit_quiz(url, quiz, canvas_quiz, canvas_quiz_folder):
     """
     Update an existing quiz.
 
     Parameters
     ----------
+    url: str
+        Canvas URL
+
     quiz: obj
         parsed quiz data
 
     canvas_quiz: Quiz
         Quiz object to modify
+
+    canvas_quiz_folder: obj
+        Canvas course to get folder from
 
     Returns
     -------
@@ -42,6 +75,10 @@ def edit_quiz(quiz, canvas_quiz):
             canvas_group = canvas_quiz.create_question_group(group_attrs)
 
         for question in group["questions"]:
+            for media in question["image_paths"]:
+                new_media = update_media(url, canvas_quiz_folder, media["path"])
+                question["question_text"] = question["question_text"].replace(media["name"], new_media)
+
             if group["attrs"]["name"].lower() != "general":
                 question["quiz_group_id"] = canvas_group.id
             
@@ -74,6 +111,38 @@ def get_course(url, token, course_id):
     canvas = cv.Canvas(url, token)
     return canvas.get_course(course_id)
 
+def get_quiz_folder(course, quiz_id):
+    """
+    Get media folder for this quiz.
+
+    Parameters
+    ----------
+    course: obj
+        Canvas course to get folder from
+
+    quiz_id: str
+        numerical ID of quiz
+
+    Returns
+    -------
+    int
+        ID of folder for given quiz
+    """
+    folders = course.get_folders()
+    for folder in folders:
+        if folder.name.lower() == "m2c quiz media":
+            for quiz_folder in folder.get_folders():
+                if quiz_folder.name == quiz_id:
+                    return quiz_folder
+            
+            quiz_folder = folder.create_folder(quiz_id)
+            return quiz_folder
+
+    gen_folder = course.create_folder("M2C Quiz Media")
+    quiz_folder = gen_folder.create_folder(quiz_id)
+
+    return quiz_folder
+
 def upload_quiz(quiz, url, token, course_id):
     """
     Upload a new quiz.
@@ -96,8 +165,16 @@ def upload_quiz(quiz, url, token, course_id):
     -------
     None
     """
-    canvas_quiz = get_course(url, token, course_id).create_quiz(quiz["attrs"])
-    edit_quiz(quiz, canvas_quiz)
+    canvas_course = get_course(url, token, course_id)
+    canvas_quiz = canvas_course.create_quiz(quiz["attrs"])
+    canvas_quiz_folder = get_quiz_folder(canvas_course, str(canvas_quiz.id))
+
+    for media in quiz["attrs"]["image_paths"]:
+        new_media = update_media(url, canvas_quiz_folder, media["path"])
+        quiz["attrs"]["description"] = quiz["attrs"]["description"].replace(media["name"], new_media)
+
+    canvas_quiz.edit(quiz=quiz["attrs"])
+    edit_quiz(url, quiz, canvas_quiz, canvas_quiz_folder)
 
 def update_quiz(quiz, url, token, course_id, quiz_id):
     """
@@ -124,6 +201,13 @@ def update_quiz(quiz, url, token, course_id, quiz_id):
     -------
     None
     """
-    canvas_quiz = get_course(url, token, course_id).get_quiz(quiz_id)
-    canvas_quiz = canvas_quiz.edit(quiz=quiz["attrs"])
-    edit_quiz(quiz, canvas_quiz)
+    canvas_course = get_course(url, token, course_id)
+    canvas_quiz = canvas_course.get_quiz(quiz_id)
+    canvas_quiz_folder = get_quiz_folder(canvas_course, str(canvas_quiz.id))
+    
+    for media in quiz["attrs"]["image_paths"]:
+        new_media = update_media(url, canvas_quiz_folder, media["path"])
+        quiz["attrs"]["description"] = quiz["attrs"]["description"].replace(media["name"], new_media)
+
+    canvas_quiz.edit(quiz=quiz["attrs"])
+    edit_quiz(url, quiz, canvas_quiz, canvas_quiz_folder)
