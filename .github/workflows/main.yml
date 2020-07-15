@@ -17,29 +17,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-
-    # Install dependencies
-    - name: Set up Python 3.7
-      uses: actions/setup-python@v1
+    - uses: ammaraskar/sphinx-action@master
       with:
-        python-version: 3.7
-
-    # Set up Miniconda with environment
-    - name: Setup Miniconda
-      uses: goanpeca/setup-miniconda@v1.1.2
-      with:
-        environment-file: environment.yml
-        activate-environment: doc_builder
-        python-version: 3.7
-        auto-activate-base: false
-
-    # Build the book
-    - name: Build the book
-      shell: bash
-      run: |
-        cd docs
-        make html
-        cd ..
+        docs-folder: "docs/"
         
     # Push the book's HTML to github-pages
     - name: GitHub Pages action
