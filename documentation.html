@@ -241,6 +241,135 @@
 </div>
 <div class="section" id="json2canvas-py">
 <span id="id3"></span><h3>json2canvas.py<a class="headerlink" href="#json2canvas-py" title="Permalink to this headline">¶</a></h3>
+<span class="target" id="module-myst2canvas.json2canvas"></span><dl class="function">
+<dt id="myst2canvas.json2canvas.edit_quiz">
+<code class="sig-prename descclassname">myst2canvas.json2canvas.</code><code class="sig-name descname">edit_quiz</code><span class="sig-paren">(</span><em class="sig-param">url</em>, <em class="sig-param">quiz</em>, <em class="sig-param">canvas_quiz</em>, <em class="sig-param">canvas_quiz_folder</em><span class="sig-paren">)</span><a class="headerlink" href="#myst2canvas.json2canvas.edit_quiz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update an existing quiz.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>url</strong> (<em>str</em>) – Canvas URL</p></li>
+<li><p><strong>quiz</strong> (<em>obj</em>) – parsed quiz data</p></li>
+<li><p><strong>canvas_quiz</strong> (<em>Quiz</em>) – Quiz object to modify</p></li>
+<li><p><strong>canvas_quiz_folder</strong> (<em>obj</em>) – Canvas course to get folder from</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="myst2canvas.json2canvas.get_course">
+<code class="sig-prename descclassname">myst2canvas.json2canvas.</code><code class="sig-name descname">get_course</code><span class="sig-paren">(</span><em class="sig-param">url</em>, <em class="sig-param">token</em>, <em class="sig-param">course_id</em><span class="sig-paren">)</span><a class="headerlink" href="#myst2canvas.json2canvas.get_course" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve Course from Canvas</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>url</strong> (<em>str</em>) – Canvas URL</p></li>
+<li><p><strong>token</strong> (<em>str</em>) – access token</p></li>
+<li><p><strong>course_id</strong> (<em>str</em>) – numerical ID of course</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Course object that hosts quiz</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Course</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="myst2canvas.json2canvas.get_quiz_folder">
+<code class="sig-prename descclassname">myst2canvas.json2canvas.</code><code class="sig-name descname">get_quiz_folder</code><span class="sig-paren">(</span><em class="sig-param">course</em>, <em class="sig-param">quiz_id</em><span class="sig-paren">)</span><a class="headerlink" href="#myst2canvas.json2canvas.get_quiz_folder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get media folder for this quiz.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>course</strong> (<em>obj</em>) – Canvas course to get folder from</p></li>
+<li><p><strong>quiz_id</strong> (<em>str</em>) – numerical ID of quiz</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>ID of folder for given quiz</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="myst2canvas.json2canvas.update_media">
+<code class="sig-prename descclassname">myst2canvas.json2canvas.</code><code class="sig-name descname">update_media</code><span class="sig-paren">(</span><em class="sig-param">url</em>, <em class="sig-param">folder</em>, <em class="sig-param">media</em><span class="sig-paren">)</span><a class="headerlink" href="#myst2canvas.json2canvas.update_media" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add media to folder if it doesn’t already exist.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>url</strong> (<em>str</em>) – Canvas URL</p></li>
+<li><p><strong>folder</strong> (<em>obj</em>) – Canvas course to get folder from</p></li>
+<li><p><strong>quiz_id</strong> (<em>str</em>) – numerical ID of quiz</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>ID of folder for given quiz</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="myst2canvas.json2canvas.update_quiz">
+<code class="sig-prename descclassname">myst2canvas.json2canvas.</code><code class="sig-name descname">update_quiz</code><span class="sig-paren">(</span><em class="sig-param">quiz</em>, <em class="sig-param">url</em>, <em class="sig-param">token</em>, <em class="sig-param">course_id</em>, <em class="sig-param">quiz_id</em><span class="sig-paren">)</span><a class="headerlink" href="#myst2canvas.json2canvas.update_quiz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update an existing quiz.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>quiz</strong> (<em>obj</em>) – parsed quiz data</p></li>
+<li><p><strong>url</strong> (<em>str</em>) – Canvas URL</p></li>
+<li><p><strong>token</strong> (<em>str</em>) – access token</p></li>
+<li><p><strong>course_id</strong> (<em>str</em>) – numerical ID of course</p></li>
+<li><p><strong>quiz_id</strong> (<em>str</em>) – numerical ID of quiz</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="myst2canvas.json2canvas.upload_quiz">
+<code class="sig-prename descclassname">myst2canvas.json2canvas.</code><code class="sig-name descname">upload_quiz</code><span class="sig-paren">(</span><em class="sig-param">quiz</em>, <em class="sig-param">url</em>, <em class="sig-param">token</em>, <em class="sig-param">course_id</em><span class="sig-paren">)</span><a class="headerlink" href="#myst2canvas.json2canvas.upload_quiz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Upload a new quiz.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>quiz</strong> (<em>obj</em>) – parsed quiz data</p></li>
+<li><p><strong>url</strong> (<em>str</em>) – Canvas URL</p></li>
+<li><p><strong>token</strong> (<em>str</em>) – access token</p></li>
+<li><p><strong>course_id</strong> (<em>str</em>) – numerical ID of course</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 <div class="section" id="util-py">
 <span id="id4"></span><h3>util.py<a class="headerlink" href="#util-py" title="Permalink to this headline">¶</a></h3>
