@@ -4,8 +4,7 @@ dependencies:
   - click
   - sphinx=2.4.4
   - jupyter
-  - runjb
   - pip
-  - autodoc
   - pip:
     - sphinx_rtd_theme
+    - autodoc
