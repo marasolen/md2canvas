@@ -1,4 +1,6 @@
 sphinx_rtd_theme
 canvasapi
 jupytext
-dateutil
+python-dateutil
+markdown
+bs4
