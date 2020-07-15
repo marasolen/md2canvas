@@ -44,7 +44,7 @@ def to_canvas(latex, inline = False):
 def parse_md_text(text):
     """
     Parse markdown into HTML, also check for latex.
-
+ 
     Parameters
     ----------
     text: str
