@@ -53,14 +53,43 @@ def edit_quiz(url, quiz, canvas_quiz, canvas_quiz_folder):
     ex_groups = {}
     ex_questions = {}
 
-    canvas_questions = canvas_quiz.get_questions()
-    for canvas_question in canvas_questions:
-        ex_questions[canvas_question.question_name] = canvas_question
+    for canvas_question in canvas_quiz.get_questions():
         group_id = canvas_question.quiz_group_id
 
         if group_id is not None:
             canvas_group = canvas_quiz.get_quiz_group(group_id)
             ex_groups[canvas_group.name] = canvas_group
+
+        found_question = False
+        for group in quiz["groups"]:
+            for question in group["questions"]:
+                if question["question_name"] == canvas_question.question_name:
+                    found_question = True
+                    break
+            if found_question:
+                break
+        
+        if found_question:
+            ex_questions[canvas_question.question_name] = canvas_question
+        else:
+            canvas_question.delete()
+    
+    for group_name, group_obj in ex_groups.items():
+        group_in_use = False
+        for canvas_question in canvas_quiz.get_questions():
+            if canvas_question.quiz_group_id == group_obj.id:
+                group_in_use = True
+                break
+
+        if not group_in_use:
+            for group in quiz["groups"]:
+                if group_name == group["attrs"]["name"] and len(group["questions"]) > 0:
+                    group_in_use = True
+                    break
+
+        if not group_in_use:
+            group_obj.delete(group_obj.id)
+
 
     for group in quiz["groups"]:
         if group["questions"] is []:
