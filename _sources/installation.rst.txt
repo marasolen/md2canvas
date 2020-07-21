@@ -3,11 +3,11 @@
 Installation
 ============
 
-myst2canvas can be installed using the following command:
+md2canvas can be installed using the following command:
 
 .. code-block:: bash
 
-   pip install git+https://github.com/hcolclou/myst2canvas
+   pip install git+https://github.com/hcolclou/md2canvas
 
 .. toctree::
    :hidden:

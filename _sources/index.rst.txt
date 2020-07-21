@@ -1,10 +1,10 @@
-myst2canvas
+md2canvas
 ===========
 
 Introduction
 ------------
 
-Welcome to the myst2canvas documentation site! myst2canvas is a tool that you can use to transform 
+Welcome to the md2canvas documentation site! md2canvas is a tool that you can use to transform 
 human-readable MyST quizzes into fully functional, uploaded Canvas quizzes.
 
 At the moment, the following features are included:
