@@ -12,9 +12,6 @@ from bs4 import BeautifulSoup
 
 md = markdown.Markdown()
 
-re_hdrtag = re.compile(r"\#{1,4}")
-hdr_dict = {"#":"quiz", "##":"group", "###":"question", "####":"options"}
-
 def to_canvas(latex, inline = False):
     """
     Convert latex to Canvas format.
@@ -105,83 +102,6 @@ def parse_md_text(text):
 
     return text.replace("\\", ""), image_paths
 
-def parse_value(val):
-    """
-    Parse value.
-
-    Parameters
-    ----------
-    val: str
-        value to parse
-
-    Returns
-    -------
-    int/bool/datetime/str
-        parsed value
-    """
-    if val.isnumeric():
-        return int(val)
-    elif val == "True":
-        return True
-    elif val == "False":
-        return False
-    else:
-        try:
-            datetime = parse(val)
-            return datetime
-        except ValueError:
-            pass
-
-    return val
-    
-
-def parse_attrs(text, title_name="title", desc_name="description"):
-    """
-    Parse metadata.
-
-    Parameters
-    ----------
-    text: str
-        metadata
-
-    title_name: str
-        dict key for title
-
-    desc_name: str
-        dict key for description
-
-    Returns
-    -------
-    obj
-        parsed metadata
-
-    [str]
-        list of paths to images linked from this text
-    
-    """
-    attrs = {}
-    if "\n" in text:
-        attrs[title_name] = text[:text.index("\n")].strip(" ")
-        text = text[text.index("\n") + 1:]
-    else:
-        attrs[title_name] = text.strip(" ")
-        return attrs, []
-
-    if "*" in text:
-        attrs[desc_name], image_paths = parse_md_text(text[:text.index("*")].strip(" \n"))
-        text = text[text.index("*"):]
-    else:
-        attrs[desc_name], image_paths = parse_md_text(text.strip(" \n"))
-        return attrs, image_paths
-
-    for line in text.split("\n"):
-        if line.startswith("*"):
-            key = line[1:line.index(":")].strip(" ").replace("-", "_")
-            val = line[line.index(":") + 1:].strip(" ").replace("-", "_")
-            attrs[key] = parse_value(val)
-
-    return attrs, image_paths
-
 def parse_weight(weight):
     """
     Convert weight to int.
@@ -196,6 +116,7 @@ def parse_weight(weight):
     int
         converted weight
     """
+    print(weight)
     if isinstance(weight, bool):
         if weight: return 100
         else: return 0
@@ -204,7 +125,28 @@ def parse_weight(weight):
     else:
         return -1
 
-def parse_answerless_question(q_name, options):
+def parse_list(text):
+    """
+    Parse text for list elements.
+
+    Parameters
+    ----------
+    text: str
+        text to parse
+
+    Returns
+    -------
+    [str]
+        the separated list elements
+    """
+    arr = []
+    for line in text.split("\n"):
+        if line.startswith("* "):
+            arr.append(line[1:].strip(" "))
+
+    return arr
+
+def parse_answerless_question(q_name, index):
     """
     Function for dict, takes place for question types with no answers.
 
@@ -213,8 +155,8 @@ def parse_answerless_question(q_name, options):
     q_name: str
         name of the question
     
-    options: str
-        metadata and answer list
+    index: int
+        index of the question in cell array
 
     Returns
     -------
@@ -226,7 +168,7 @@ def parse_answerless_question(q_name, options):
     """
     return [], {}
 
-def parse_matching_question(q_name, options):
+def parse_matching_question(q_name, index):
     """
     Parse matching question answers.
 
@@ -235,8 +177,8 @@ def parse_matching_question(q_name, options):
     q_name: str
         name of the question
     
-    options: str
-        metadata and answer list
+    index: int
+        index of the question in cell array
 
     Returns
     -------
@@ -246,36 +188,44 @@ def parse_matching_question(q_name, options):
     obj 
         extra attributes to add to the question
     """
-    answers = []
-    extra = {}
-    attrs, extra["image_paths"] = parse_attrs(options, title_name="UNUSED", desc_name="UNUSED")
+    aindex = index + 1
+    length_check = len(cells) <= aindex
+    cell_type_check = cells[aindex]["metadata"]["ctype"] != "answer"
+
+    if length_check or cell_type_check:
+        raise Exception("WARNING: multiple answers question has no answer cell.")
+
+    options = parse_list(cells[index]["source"])
+    matches = parse_list(cells[index + 1]["source"])
+
+    if len(options) <= len(matches):
+        raise Exception("WARNING: matching question has mismatched answer numbers.")
+
+    left = options[:len(matches)]
+    right = options[len(matches):]
     
-    distractors = []
-    for key, val in attrs.items():
-        if key == "UNUSED":
-            continue
-        answer = {"answer_match_left": key}
-        ans_attrs = []
+    incorrect = []
+    image_paths = []
+    for i, x in enumerate(right):
+        if str(i + 1) not in matches:
+            incorrect.append(x)
 
-        arr = val.split(";")
-        answer["answer_match_right"] = arr[0].strip(" ")
-        ans_attrs = arr[1:]
+    matches = zip(left, matches)
 
-        for ans_attr in ans_attrs:
-            ans_key = ans_attr[1:ans_attr.index(":")].strip(" ").replace("-", "_")
-            ans_val = ans_attr[ans_attr.index(":") + 1:].strip(" ").replace("-", "_")
-            if ans_key == "matching_answer_incorrect_matches":
-                distractors += ans_val.split(",")
-                continue
-            answer[ans_key] = parse_value(ans_val)
+    answers = []
+    for (key, match) in matches:
+        l = key
+        r = right[int(match) - 1]
 
-        answers += [answer]
+        answer = {"answer_match_left": l, "answer_match_right": r}
+        answers.append(answer)
 
-    extra["matching_answer_incorrect_matches"] = "\n".join(list(map(lambda x : x.strip(" "), distractors)))
+    extra = {"matching_answer_incorrect_matches": "\n".join(list(map(lambda x : x.strip(" "), incorrect))) }
+    extra["image_paths"] = image_paths
 
     return answers, extra
 
-def parse_multiple_answers_question(q_name, options):
+def parse_multiple_answers_question(q_name, index):
     """
     Parse multiple answers question answers.
 
@@ -284,8 +234,8 @@ def parse_multiple_answers_question(q_name, options):
     q_name: str
         name of the question
     
-    options: str
-        metadata and answer list
+    index: int
+        index of the question in cell array
 
     Returns
     -------
@@ -295,34 +245,34 @@ def parse_multiple_answers_question(q_name, options):
     obj 
         extra attributes to add to the question
     """
+    aindex = index + 1
+    length_check = len(cells) <= aindex
+    cell_type_check = cells[aindex]["metadata"]["ctype"] != "answer"
+
+    if length_check or cell_type_check:
+        raise Exception("WARNING: multiple answers question has no answer cell.")
+
+    options = parse_list(cells[index]["source"])
+    values = parse_list(cells[index + 1]["source"])
+
+    if len(options) != len(values):
+        raise Exception("WARNING: multiple answers/choice question has mismatched answer numbers.")
+
+    pairs = zip(options, values)
+
     answers = []
-    extra = {}
-    attrs, extra["image_paths"] = parse_attrs(options, title_name="UNUSED", desc_name="UNUSED")
-    for key, val in attrs.items():
-        if key == "UNUSED":
-            continue
-        answer = {"answer_text": key}
-        ans_attrs = []
+    for (ans, val) in pairs:
+        answer = {"answer_text": ans}
 
-        if isinstance(val, str):
-            arr = val.split(";")
-            weight = arr[0].strip(" ")
-            ans_attrs = arr[1:]
-            val = parse_value(weight)
-
-        weight = parse_weight(val)
+        if val.strip(" ").lower() == "true": weight = 100
+        else: weight = 0
         answer["answer_weight"] = weight
 
-        for ans_attr in ans_attrs:
-            ans_key = ans_attr[1:ans_attr.index(":")].strip(" ").replace("-", "_")
-            ans_val = ans_attr[ans_attr.index(":") + 1:].strip(" ").replace("-", "_")
-            answer[ans_key] = parse_value(ans_val)
+        answers.append(answer)
 
-        answers += [answer]
+    return answers, {}
 
-    return answers, extra
-
-def parse_multiple_choice_question(q_name, options):
+def parse_multiple_choice_question(q_name, index):
     """
     Parse multiple choice question answers.
 
@@ -331,8 +281,8 @@ def parse_multiple_choice_question(q_name, options):
     q_name: str
         name of the question
     
-    options: str
-        metadata and answer list
+    index: int
+        index of the question in cell array
 
     Returns
     -------
@@ -342,11 +292,18 @@ def parse_multiple_choice_question(q_name, options):
     obj 
         extra attributes to add to the question
     """
-    answers, extra = parse_multiple_answers_question(q_name, options)
+    aindex = index + 1
+    length_check = len(cells) <= aindex
+    cell_type_check = cells[aindex]["metadata"]["ctype"] != "answer"
+
+    if length_check or cell_type_check:
+        raise Exception("WARNING: multiple choice question has no answer cell.")
+
+    answers, extra = parse_multiple_answers_question(q_name, index)
 
     def check_weight(weight):
         if weight == -1 or (weight != 0 and weight != 100):
-            print("Invalid answer weight for multiple choice question: " + str(weight))
+            ut.sprint("WARNING: Invalid answer weight for multiple choice question: " + str(weight))
             return False
         return True
 
@@ -355,12 +312,12 @@ def parse_multiple_choice_question(q_name, options):
     for answer in answers:
         weight = answer["answer_weight"]
         if not check_weight(weight):
-            print("WARNING: invalid weight in answer list for question " + q_name)
+            ut.sprint("WARNING: invalid weight in answer list for question " + q_name)
             continue
 
         if weight > 0:
             if found_true:
-                print("WARNING: multiple correct answers in question " + q_name +
+                ut.sprint("WARNING: multiple correct answers in question " + q_name +
                 ", consider changing to multiple answers questions")
                 continue
             else:
@@ -371,7 +328,7 @@ def parse_multiple_choice_question(q_name, options):
     return final_answers, extra
     
 
-def parse_numerical_question(q_name, options):
+def parse_numerical_question(q_name, index):
     """
     Parse numerical question answers.
 
@@ -380,8 +337,8 @@ def parse_numerical_question(q_name, options):
     q_name: str
         name of the question
     
-    options: str
-        metadata and answer list
+    index: int
+        index of the question in cell array
 
     Returns
     -------
@@ -391,8 +348,15 @@ def parse_numerical_question(q_name, options):
     obj 
         extra attributes to add to the question
     """
+    aindex = index + 1
+    length_check = len(cells) <= aindex
+    cell_type_check = cells[aindex]["metadata"]["ctype"] != "answer"
+
+    if length_check or cell_type_check:
+        raise Exception("WARNING: numerical question has no answer cell.")
+
     answers = []
-    for line in options.split("\n"):
+    for line in cells[index + 1]["source"].split("\n"):
         if line.startswith("*"):
             v1 = 0
             v2 = 0
@@ -400,7 +364,7 @@ def parse_numerical_question(q_name, options):
             text = line[1:].strip(" ")
             if "," not in text:
                 if ":" in text:
-                    print("WARNING: numerical answer has one value but has answer type, " +
+                    ut.sprint("WARNING: numerical answer has one value but has answer type, " +
                           "only one of these is allowed")
                 v1 = float(text)
                 answer["numerical_answer_type"] = "exact_answer"
@@ -427,14 +391,14 @@ def parse_numerical_question(q_name, options):
                 answer["answer_approximate"] = v1
                 answer["answer_precision"] = v2
             else:
-                print("WARNING: numerical answer type not supported: " + answer["numerical_answer_type"])
+                ut.sprint("WARNING: numerical answer type not supported: " + answer["numerical_answer_type"])
                 continue
 
             answers += [answer]
                     
     return answers, {}
 
-def parse_short_answer_question(q_name, options):
+def parse_short_answer_question(q_name, index):
     """
     Parse short answer question answers.
 
@@ -443,8 +407,8 @@ def parse_short_answer_question(q_name, options):
     q_name: str
         name of the question
     
-    options: str
-        metadata and answer list
+    index: int
+        index of the question in cell array
 
     Returns
     -------
@@ -454,15 +418,22 @@ def parse_short_answer_question(q_name, options):
     obj 
         extra attributes to add to the question
     """
+    aindex = index + 1
+    length_check = len(cells) <= aindex
+    cell_type_check = cells[aindex]["metadata"]["ctype"] != "answer"
+
+    if length_check or cell_type_check:
+        raise Exception("WARNING: short answer question has no answer cell.")
+
     answers = []
-    for line in options.split("\n"):
+    for line in cells[aindex]["source"].split("\n"):
         if line.startswith("*"):
             text = line[1:].strip(" ")
             answers += [{"answer_text": text}]
                     
     return answers, {}
 
-def parse_true_false_question(q_name, options):
+def parse_true_false_question(q_name, index):
     """
     Parse true/false question answers.
 
@@ -471,8 +442,8 @@ def parse_true_false_question(q_name, options):
     q_name: str
         name of the question
     
-    options: str
-        metadata and answer list
+    index: int
+        index of the question in cell array
 
     Returns
     -------
@@ -482,8 +453,13 @@ def parse_true_false_question(q_name, options):
     obj 
         extra attributes to add to the question
     """
-    extra = {}
-    attrs, extra["image_paths"] = parse_attrs(options, desc_name="answer")
+    aindex = index + 1
+    length_check = len(cells) <= aindex
+    cell_type_check = cells[aindex]["metadata"]["ctype"] != "answer"
+
+    if length_check or cell_type_check:
+        raise Exception("WARNING: true/false question has no answer cell.")
+
     true_ans = {
         "answer_text": "True",
         "answer_weight": 0
@@ -492,12 +468,13 @@ def parse_true_false_question(q_name, options):
         "answer_text": "False",
         "answer_weight": 0
     }
-    if "true" in attrs["answer"].lower():
+    
+    if "true" in cells[index + 1]["source"].lower():
         true_ans["answer_weight"] = 100
     else:
         false_ans["answer_weight"] = 100
 
-    return [true_ans, false_ans], extra
+    return [true_ans, false_ans], {}
 
 
 supp_q_types = {"essay_question": {"parser": parse_answerless_question}, 
@@ -514,75 +491,89 @@ supp_q_types = {"essay_question": {"parser": parse_answerless_question},
                     {"parser": parse_true_false_question,
                      "warning": "API does not support true/false questions, converting to multiple choice"}}
 
-def parse_question(text, question_arr):
+def parse_question(index):
     """
     Parse Question.
 
     Parameters
     ----------
-    text: str
-        metadata for the question
-
-    question_arr: [obj]
-        list of the following objects in the quiz
+    index: int
+        index of the question in cell array
 
     Returns
     -------
     obj
         parsed question
     """
-    attrs, image_paths = parse_attrs(text, title_name="question_name", desc_name="question_text")
-    if "question_type" not in attrs:
-        print("WARNING: question does not have question-type, not including question")
+    question = {}
+    
+    for key, val, in cells[index]["metadata"].items():
+        if key == "ctype":
+            continue
+        elif key == "quesnum":
+            question["question_name"] = str(val)
+        else:
+            question[key] = val
+            
+    if "question_type" not in question:
+        ut.sprint("WARNING: question does not have question-type, not including question")
         return None
 
-    q_type = attrs["question_type"]
-    if len(question_arr) == 0:
-        return attrs
+    if "points_possible" not in question:
+        question["points_possible"] = 1
 
-    options = question_arr[0][1]
+    q_type = question["question_type"]
+
     if q_type not in supp_q_types:
-        print("WARNING: unsupported question type of " + q_type)
+        ut.sprint("WARNING: unsupported question type of " + q_type)
         return None
 
     if "warning" in supp_q_types[q_type]:
         ut.sprint("WARNING: " + supp_q_types[q_type]["warning"])
-        
-    attrs["answers"], extra = supp_q_types[q_type]["parser"](attrs["question_name"], options)
+    
+    try:
+        question["answers"], extra = supp_q_types[q_type]["parser"](question["question_name"], index)
+    except Exception as e:
+        ut.sprint(str(e))
+        return None
+
+    question_text, image_paths = parse_md_text(cells[index]["source"])
+    question["question_text"] = question_text
     extra["image_paths"] = image_paths
-    attrs = {**attrs, **extra}
+    question = {**question, **extra}
 
-    return attrs
+    return question
 
-def parse_group(text, group_arr):
+def parse_group(group_index):
     """
     Parse Question Group.
 
     Parameters
     ----------
-    text: str
-        metadata for the group
-
-    group_arr: [obj]
-        list of the following objects in the quiz
+    group_index: int
+        index of the group in cell array
 
     Returns
     -------
     obj
         parsed group
     """
-    attrs, _ = parse_attrs(text, title_name="name")
-    group = {"attrs": attrs, "questions": []}
-
-    for index, (obj_type, text) in enumerate(group_arr):
-        if hdr_dict[obj_type] == "group":
-            break
-        elif hdr_dict[obj_type] == "question":
-            rest = group_arr[index + 1:]
-            question = parse_question(text, rest)
-            group["questions"].append(question)
-        else:
+    group = {"attrs": {}, "questions": []}
+    
+    for key, val, in cells[group_index]["metadata"].items():
+        if key == "ctype":
             continue
+        else:
+            group["attrs"][key] = val
+
+    for index, cell in enumerate(cells):
+        if index <= group_index:
+            continue
+        if cell["metadata"]["ctype"] == "group":
+            break
+        elif cell["metadata"]["ctype"] == "question":
+            question = parse_question(index)
+            group["questions"].append(question)
 
     return group
 
@@ -613,22 +604,27 @@ def parse_quiz(nb_file):
 
     quiz = {"attrs": {}, "groups": []}
 
-    src = nb_obj["cells"][-1]["source"]
-    hdrs = re_hdrtag.findall(src)
-    elems = re_hdrtag.split(src)[1:]
-    elems = list(map(lambda el: el.strip(), elems))
-    flat_tree = list(zip( hdrs, elems))
-    for index, (obj_type, text) in enumerate(flat_tree):
-        if hdr_dict[obj_type] == "quiz":
-            attrs, image_paths = parse_attrs(text)
-            attrs["image_paths"] = image_paths
-            quiz["attrs"] = attrs
+    global cells
+    cells = nb_obj["cells"]
 
-        elif hdr_dict[obj_type] == "group":
-            rest = flat_tree[index + 1:]
-            group = parse_group(text, rest)
+    start = False
+    for index, cell in enumerate(cells):
+        if not start and cell["metadata"]["ctype"] == "quiz":
+            start = True
+            desc, image_paths = parse_md_text(cell["source"])
+            quiz["attrs"]["description"] = desc
+            quiz["attrs"]["image_paths"] = image_paths
+            for key, val, in cell["metadata"].items():
+                if key == "ctype":
+                    continue
+                else:
+                    quiz["attrs"][key] = val
+        elif start and cell["metadata"]["ctype"] == "quiz":
+            break
+        elif start and cell["metadata"]["ctype"] == "group":
+            group = parse_group(index)
             quiz["groups"].append(group)
-        else:
-            continue
+
+    ut.pprint(quiz)
 
     return quiz
