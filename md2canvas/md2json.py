@@ -6,7 +6,7 @@ from jupytext.cli import jupytext
 from dateutil.parser import parse
 import urllib.parse as parseurl
 from datetime import datetime
-import myst2canvas.util as ut
+import md2canvas.util as ut
 import markdown
 from bs4 import BeautifulSoup
 

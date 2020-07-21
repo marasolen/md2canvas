@@ -1,14 +1,14 @@
 from setuptools import setup
 
 setup(
-    name='myst2canvas',
+    name='md2canvas',
     author="Mara Cielanga Colclough",
     version="0.1",
-    packages=["myst2canvas"],
-    package_dir={'myst2canvas': 'myst2canvas'},
+    packages=["md2canvas"],
+    package_dir={'md2canvas': 'md2canvas'},
     entry_points={
         'console_scripts': [
-            'myst2canvas = myst2canvas.command:myst2canvas',
+            'md2canvas = md2canvas.command:md2canvas',
         ]
     },
 )

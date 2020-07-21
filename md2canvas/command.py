@@ -2,9 +2,9 @@ import json
 import click
 from os import path
 from configparser import ConfigParser
-import myst2canvas.myst2json as m2j
-import myst2canvas.json2canvas as j2c
-import myst2canvas.util as ut
+import md2canvas.md2json as m2j
+import md2canvas.json2canvas as j2c
+import md2canvas.util as ut
 
 NOT_SET = "NOT_SET"
 
@@ -28,7 +28,7 @@ NOT_SET = "NOT_SET"
               default=False, help="Set flag to stop uploading of quiz.")
 @click.option("-h", "--hush", "hush", flag_value=True,
               default=False, help="Set flag to stop printing other than warnings and errors.")
-def myst2canvas(url, notebook_file, token, token_file, course_id, save_settings,
+def md2canvas(url, notebook_file, token, token_file, course_id, save_settings,
                 quiz_id, dump, no_upload, hush):
     """
     Parse file into quiz and upload to Canvas.

@@ -3,7 +3,7 @@
 Documentation
 =============
 
-Usage: myst2canvas [OPTIONS] NOTEBOOK_FILE
+Usage: md2canvas [OPTIONS] NOTEBOOK_FILE
 
 * Parse file into quiz and upload to Canvas.
 
@@ -51,11 +51,11 @@ Options:
 Example
 ~~~~~~~
 
-The quiz in the examples folder is fully functional on the latest version of myst2canvas. If your settings are already saved in the config file, this quiz can be uploaded with the following command:
+The quiz in the examples folder is fully functional on the latest version of md2canvas. If your settings are already saved in the config file, this quiz can be uploaded with the following command:
 
 .. code-block:: bash
 
-   myst2canvas .\examples\simpleQuiz.md
+   md2canvas .\examples\simpleQuiz.md
   
 API
 ~~~
@@ -70,12 +70,12 @@ The following files are documented here:
 
 * :ref:`util.py`
 
-.. _myst2json.py:
+.. _md2json.py:
 
 myst2json.py
 """"""""""""
 
-.. automodule:: myst2canvas.myst2json
+.. automodule:: md2canvas.myst2json
     :members:
 
 .. _json2canvas.py:
@@ -83,7 +83,7 @@ myst2json.py
 json2canvas.py
 """"""""""""""
 
-.. automodule:: myst2canvas.json2canvas
+.. automodule:: md2canvas.json2canvas
     :members:
 
 .. _util.py:
@@ -91,7 +91,7 @@ json2canvas.py
 util.py
 """""""
 
-.. automodule:: myst2canvas.util
+.. automodule:: md2canvas.util
     :members:
 
 .. toctree::

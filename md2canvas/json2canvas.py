@@ -1,5 +1,5 @@
 import canvasapi as cv
-import myst2canvas.util as ut
+import md2canvas.util as ut
 
 def update_media(url, folder, media):
     """
