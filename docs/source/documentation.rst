@@ -64,7 +64,7 @@ For using the API, refer to the :ref:`documentation` page.
 
 The following files are documented here:
 
-* :ref:`myst2json.py`
+* :ref:`md2json.py`
 
 * :ref:`json2canvas.py`
 
@@ -72,10 +72,10 @@ The following files are documented here:
 
 .. _md2json.py:
 
-myst2json.py
+md2json.py
 """"""""""""
 
-.. automodule:: md2canvas.myst2json
+.. automodule:: md2canvas.md2json
     :members:
 
 .. _json2canvas.py:
