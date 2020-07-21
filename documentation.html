@@ -86,7 +86,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Documentation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#example">Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#api">API</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#myst2json-py">myst2json.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#md2json-py">md2json.py</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#json2canvas-py">json2canvas.py</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#util-py">util.py</a><ul class="simple">
 </ul>
@@ -232,15 +232,285 @@
 <p>For using the API, refer to the <a class="reference internal" href="#documentation"><span class="std std-ref">Documentation</span></a> page.</p>
 <p>The following files are documented here:</p>
 <ul class="simple">
-<li><p><span class="xref std std-ref">myst2json.py</span></p></li>
+<li><p><a class="reference internal" href="#md2json-py"><span class="std std-ref">md2json.py</span></a></p></li>
 <li><p><a class="reference internal" href="#json2canvas-py"><span class="std std-ref">json2canvas.py</span></a></p></li>
 <li><p><a class="reference internal" href="#util-py"><span class="std std-ref">util.py</span></a></p></li>
 </ul>
-<div class="section" id="myst2json-py">
-<span id="md2json-py"></span><h3>myst2json.py<a class="headerlink" href="#myst2json-py" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="md2json-py">
+<span id="id2"></span><h3>md2json.py<a class="headerlink" href="#md2json-py" title="Permalink to this headline">¶</a></h3>
+<span class="target" id="module-md2canvas.md2json"></span><dl class="function">
+<dt id="md2canvas.md2json.parse_answerless_question">
+<code class="sig-prename descclassname">md2canvas.md2json.</code><code class="sig-name descname">parse_answerless_question</code><span class="sig-paren">(</span><em class="sig-param">q_name</em>, <em class="sig-param">index</em><span class="sig-paren">)</span><a class="headerlink" href="#md2canvas.md2json.parse_answerless_question" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function for dict, takes place for question types with no answers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>q_name</strong> (<em>str</em>) – name of the question</p></li>
+<li><p><strong>index</strong> (<em>int</em>) – index of the question in cell array</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>[obj]</em> – parsed answers</p></li>
+<li><p><em>obj</em> – extra attributes to add to the question</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="md2canvas.md2json.parse_group">
+<code class="sig-prename descclassname">md2canvas.md2json.</code><code class="sig-name descname">parse_group</code><span class="sig-paren">(</span><em class="sig-param">group_index</em><span class="sig-paren">)</span><a class="headerlink" href="#md2canvas.md2json.parse_group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse Question Group.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>group_index</strong> (<em>int</em>) – index of the group in cell array</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>parsed group</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>obj</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="md2canvas.md2json.parse_list">
+<code class="sig-prename descclassname">md2canvas.md2json.</code><code class="sig-name descname">parse_list</code><span class="sig-paren">(</span><em class="sig-param">text</em><span class="sig-paren">)</span><a class="headerlink" href="#md2canvas.md2json.parse_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse text for list elements.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>text</strong> (<em>str</em>) – text to parse</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the separated list elements</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="md2canvas.md2json.parse_matching_question">
+<code class="sig-prename descclassname">md2canvas.md2json.</code><code class="sig-name descname">parse_matching_question</code><span class="sig-paren">(</span><em class="sig-param">q_name</em>, <em class="sig-param">index</em><span class="sig-paren">)</span><a class="headerlink" href="#md2canvas.md2json.parse_matching_question" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse matching question answers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>q_name</strong> (<em>str</em>) – name of the question</p></li>
+<li><p><strong>index</strong> (<em>int</em>) – index of the question in cell array</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>[obj]</em> – parsed answers</p></li>
+<li><p><em>obj</em> – extra attributes to add to the question</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="md2canvas.md2json.parse_md_text">
+<code class="sig-prename descclassname">md2canvas.md2json.</code><code class="sig-name descname">parse_md_text</code><span class="sig-paren">(</span><em class="sig-param">text</em><span class="sig-paren">)</span><a class="headerlink" href="#md2canvas.md2json.parse_md_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse markdown into HTML, also check for latex.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>text</strong> (<em>str</em>) – text to parse</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>str</em> – parsed text with Canvas latex</p></li>
+<li><p><em>[str]</em> – list of paths to images linked from this text</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="md2canvas.md2json.parse_multiple_answers_question">
+<code class="sig-prename descclassname">md2canvas.md2json.</code><code class="sig-name descname">parse_multiple_answers_question</code><span class="sig-paren">(</span><em class="sig-param">q_name</em>, <em class="sig-param">index</em><span class="sig-paren">)</span><a class="headerlink" href="#md2canvas.md2json.parse_multiple_answers_question" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse multiple answers question answers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>q_name</strong> (<em>str</em>) – name of the question</p></li>
+<li><p><strong>index</strong> (<em>int</em>) – index of the question in cell array</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>[obj]</em> – parsed answers</p></li>
+<li><p><em>obj</em> – extra attributes to add to the question</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="md2canvas.md2json.parse_multiple_choice_question">
+<code class="sig-prename descclassname">md2canvas.md2json.</code><code class="sig-name descname">parse_multiple_choice_question</code><span class="sig-paren">(</span><em class="sig-param">q_name</em>, <em class="sig-param">index</em><span class="sig-paren">)</span><a class="headerlink" href="#md2canvas.md2json.parse_multiple_choice_question" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse multiple choice question answers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>q_name</strong> (<em>str</em>) – name of the question</p></li>
+<li><p><strong>index</strong> (<em>int</em>) – index of the question in cell array</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>[obj]</em> – parsed answers</p></li>
+<li><p><em>obj</em> – extra attributes to add to the question</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="md2canvas.md2json.parse_numerical_question">
+<code class="sig-prename descclassname">md2canvas.md2json.</code><code class="sig-name descname">parse_numerical_question</code><span class="sig-paren">(</span><em class="sig-param">q_name</em>, <em class="sig-param">index</em><span class="sig-paren">)</span><a class="headerlink" href="#md2canvas.md2json.parse_numerical_question" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse numerical question answers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>q_name</strong> (<em>str</em>) – name of the question</p></li>
+<li><p><strong>index</strong> (<em>int</em>) – index of the question in cell array</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>[obj]</em> – parsed answers</p></li>
+<li><p><em>obj</em> – extra attributes to add to the question</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="md2canvas.md2json.parse_question">
+<code class="sig-prename descclassname">md2canvas.md2json.</code><code class="sig-name descname">parse_question</code><span class="sig-paren">(</span><em class="sig-param">index</em><span class="sig-paren">)</span><a class="headerlink" href="#md2canvas.md2json.parse_question" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse Question.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>index</strong> (<em>int</em>) – index of the question in cell array</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>parsed question</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>obj</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="md2canvas.md2json.parse_quiz">
+<code class="sig-prename descclassname">md2canvas.md2json.</code><code class="sig-name descname">parse_quiz</code><span class="sig-paren">(</span><em class="sig-param">nb_file</em><span class="sig-paren">)</span><a class="headerlink" href="#md2canvas.md2json.parse_quiz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse quiz at given file path.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>nb_file</strong> (<em>str</em>) – path to quiz file to parse</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>parsed quiz</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>obj</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="md2canvas.md2json.parse_short_answer_question">
+<code class="sig-prename descclassname">md2canvas.md2json.</code><code class="sig-name descname">parse_short_answer_question</code><span class="sig-paren">(</span><em class="sig-param">q_name</em>, <em class="sig-param">index</em><span class="sig-paren">)</span><a class="headerlink" href="#md2canvas.md2json.parse_short_answer_question" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse short answer question answers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>q_name</strong> (<em>str</em>) – name of the question</p></li>
+<li><p><strong>index</strong> (<em>int</em>) – index of the question in cell array</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>[obj]</em> – parsed answers</p></li>
+<li><p><em>obj</em> – extra attributes to add to the question</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="md2canvas.md2json.parse_true_false_question">
+<code class="sig-prename descclassname">md2canvas.md2json.</code><code class="sig-name descname">parse_true_false_question</code><span class="sig-paren">(</span><em class="sig-param">q_name</em>, <em class="sig-param">index</em><span class="sig-paren">)</span><a class="headerlink" href="#md2canvas.md2json.parse_true_false_question" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse true/false question answers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>q_name</strong> (<em>str</em>) – name of the question</p></li>
+<li><p><strong>index</strong> (<em>int</em>) – index of the question in cell array</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>[obj]</em> – parsed answers</p></li>
+<li><p><em>obj</em> – extra attributes to add to the question</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="md2canvas.md2json.parse_weight">
+<code class="sig-prename descclassname">md2canvas.md2json.</code><code class="sig-name descname">parse_weight</code><span class="sig-paren">(</span><em class="sig-param">weight</em><span class="sig-paren">)</span><a class="headerlink" href="#md2canvas.md2json.parse_weight" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert weight to int.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>weight</strong> (<em>bool/int</em>) – weight to convert</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>converted weight</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="md2canvas.md2json.to_canvas">
+<code class="sig-prename descclassname">md2canvas.md2json.</code><code class="sig-name descname">to_canvas</code><span class="sig-paren">(</span><em class="sig-param">latex</em>, <em class="sig-param">inline=False</em><span class="sig-paren">)</span><a class="headerlink" href="#md2canvas.md2json.to_canvas" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert latex to Canvas format.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>latex</strong> (<em>str</em>) – latex string</p></li>
+<li><p><strong>inline</strong> (<em>bool</em>) – True if latex is inline</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>converted latex</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 <div class="section" id="json2canvas-py">
-<span id="id2"></span><h3>json2canvas.py<a class="headerlink" href="#json2canvas-py" title="Permalink to this headline">¶</a></h3>
+<span id="id3"></span><h3>json2canvas.py<a class="headerlink" href="#json2canvas-py" title="Permalink to this headline">¶</a></h3>
 <span class="target" id="module-md2canvas.json2canvas"></span><dl class="function">
 <dt id="md2canvas.json2canvas.edit_quiz">
 <code class="sig-prename descclassname">md2canvas.json2canvas.</code><code class="sig-name descname">edit_quiz</code><span class="sig-paren">(</span><em class="sig-param">url</em>, <em class="sig-param">quiz</em>, <em class="sig-param">canvas_quiz</em>, <em class="sig-param">canvas_quiz_folder</em><span class="sig-paren">)</span><a class="headerlink" href="#md2canvas.json2canvas.edit_quiz" title="Permalink to this definition">¶</a></dt>
@@ -372,7 +642,7 @@
 
 </div>
 <div class="section" id="util-py">
-<span id="id3"></span><h3>util.py<a class="headerlink" href="#util-py" title="Permalink to this headline">¶</a></h3>
+<span id="id4"></span><h3>util.py<a class="headerlink" href="#util-py" title="Permalink to this headline">¶</a></h3>
 <span class="target" id="module-md2canvas.util"></span><dl class="function">
 <dt id="md2canvas.util.pprint">
 <code class="sig-prename descclassname">md2canvas.util.</code><code class="sig-name descname">pprint</code><span class="sig-paren">(</span><em class="sig-param">obj</em><span class="sig-paren">)</span><a class="headerlink" href="#md2canvas.util.pprint" title="Permalink to this definition">¶</a></dt>
