@@ -229,7 +229,7 @@
 </div>
 <div class="section" id="api">
 <h2>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
-<p>For using the API, refer to the <a class="reference internal" href="#documentation"><span class="std std-ref">Documentation</span></a> page.</p>
+<p>This program uses <a class="reference external" href="https://canvasapi.readthedocs.io/en/stable/index.html">canvasapi</a>.</p>
 <p>The following files are documented here:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="#md2json-py"><span class="std std-ref">md2json.py</span></a></p></li>
@@ -673,6 +673,28 @@
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="md2canvas.util.strip_cells">
+<code class="sig-prename descclassname">md2canvas.util.</code><code class="sig-name descname">strip_cells</code><span class="sig-paren">(</span><em class="sig-param">nb_in</em>, <em class="sig-param">nb_out</em>, <em class="sig-param">the_string</em><span class="sig-paren">)</span><a class="headerlink" href="#md2canvas.util.strip_cells" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove all cells with metadata[‘ctype’]==the_string from
+cell list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nb_in</strong> (<em>str</em>) – the path of the notebook to strip cells from</p></li>
+<li><p><strong>nb_out</strong> (<em>str</em>) – the path of the notebook to write to</p></li>
+<li><p><strong>the_string</strong> (<em>str</em>) – the cell type to strip</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a new notebook object with cells stripped</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>obj</p>
 </dd>
 </dl>
 </dd></dl>
