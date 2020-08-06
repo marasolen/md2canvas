@@ -60,7 +60,9 @@ The quiz in the examples folder is fully functional on the latest version of md2
 API
 ~~~
 
-For using the API, refer to the :ref:`documentation` page.
+This program uses canvasapi_.
+
+.. _canvasapi: https://canvasapi.readthedocs.io/en/stable/index.html
 
 The following files are documented here:
 
