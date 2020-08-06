@@ -9,6 +9,7 @@ setup(
     entry_points={
         'console_scripts': [
             'md2canvas = md2canvas.command:md2canvas',
+            'anstrip = md2canvas.command:strip_answers',
         ]
     },
 )

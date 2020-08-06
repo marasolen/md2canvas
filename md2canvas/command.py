@@ -5,6 +5,7 @@ from configparser import ConfigParser
 import md2canvas.md2json as m2j
 import md2canvas.json2canvas as j2c
 import md2canvas.util as ut
+from pathlib import Path
 
 NOT_SET = "NOT_SET"
 
@@ -114,6 +115,22 @@ def md2canvas(url, notebook_file, token, token_file, course_id, save_settings,
             j2c.upload_quiz(quiz, url, token, course_id)
 
 @click.command()
-def strip_answers():
-    # TODO: remove all answer cells from markdown
-    return
+@click.argument("old_pynotebook", type=str, nargs=1)
+@click.argument("new_pynotebook", type=str, nargs=1)
+def strip_answers(old_pynotebook, new_pynotebook):
+    # Check argument validity
+    if not old_pynotebook or not path.exists(old_pynotebook):
+        print("Invalid notebook in file.")
+        return
+
+    if not old_pynotebook.endswith(".md") and \
+        not old_pynotebook.endswith(".ipynb"):
+        print("Notebook in file must be Markdown or Jupyter Notebook.")
+        return
+
+    if not new_pynotebook.endswith(".md") and \
+        not new_pynotebook.endswith(".ipynb"):
+        print("Notebook out file must be Markdown or Jupyter Notebook.")
+        return
+
+    ut.strip_cells(old_pynotebook, new_pynotebook, "answer")
