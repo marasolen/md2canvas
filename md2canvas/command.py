@@ -112,3 +112,8 @@ def md2canvas(url, notebook_file, token, token_file, course_id, save_settings,
             j2c.update_quiz(quiz, url, token, course_id, quiz_id)
         else:
             j2c.upload_quiz(quiz, url, token, course_id)
+
+@click.command()
+def strip_answers():
+    # TODO: remove all answer cells from markdown
+    return

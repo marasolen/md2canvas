@@ -15,7 +15,7 @@ kernelspec:
   name: python3
 ---
 
-+++ {"ctype": "quiz", "allowed_attempts": 3, "scoring_policy": "keep_highest", "cant_go_back": false, "shuffle_answers": false}
++++ {"ctype": "quiz", "title": "Test Canvas Quiz", "allowed_attempts": 3, "scoring_policy": "keep_highest", "cant_go_back": false, "shuffle_answers": false}
 
 # Test Canvas Quiz
 A test quiz with all supported question types and some sample metadata.
