@@ -20,7 +20,7 @@ kernelspec:
 # Test Canvas Quiz
 A test quiz with all supported question types and some sample metadata.
 
-Part of [this github](https://github.com/hcolclou/myst2canvas).
+Part of [this github](https://github.com/hcolclou/md2canvas).
 
 Here is a picture of a flower:
 

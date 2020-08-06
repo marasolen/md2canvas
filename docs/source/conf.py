@@ -17,7 +17,7 @@ sys.path.insert(0, os.path.abspath('..'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'myst2canvas'
+project = 'md2canvas'
 copyright = '2020, Mara Colclough'
 author = 'Mara Colclough'
 
