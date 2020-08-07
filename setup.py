@@ -6,6 +6,15 @@ setup(
     version="0.1",
     packages=["md2canvas"],
     package_dir={'md2canvas': 'md2canvas'},
+    install_requires=[
+        "markdown",
+        "canvasapi",
+        "click",
+        "jupytext",
+        "python-dateuntil",
+        "bs4",
+        "sphinx-rtd-theme"
+    ],
     entry_points={
         'console_scripts': [
             'md2canvas = md2canvas.command:md2canvas',
