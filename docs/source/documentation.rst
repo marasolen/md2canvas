@@ -55,7 +55,7 @@ The quiz in the examples folder is fully functional on the latest version of md2
 
 .. code-block:: bash
 
-   md2canvas .\examples\simpleQuiz.md
+   md2canvas .\examples\sample_quiz\sampleQuiz.md
   
 API
 ~~~

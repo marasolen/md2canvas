@@ -19,9 +19,9 @@ At the moment, the following features are included:
 
 * Save settings such as URL and access token for easy use
 
-This will likely be improved in the future with the following features:
-
 * Stripping a MyST file of solutions and metadata
+
+This will likely be improved in the future with the following features:
 
 * Parameterization for generating quiz questions
 
