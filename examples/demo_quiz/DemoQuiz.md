@@ -24,9 +24,33 @@ A sample quiz for demonstrations. Includes a matching question, a multiple answe
 
 ## Questions
 
-+++ {"ctype": "question", "quesnum": 1, "question_type": "matching_question", "points_possible": 5}
++++ {"ctype": "question", "quesnum": 1, "question_type": "multiple_answers_question"}
 
 ### Question 1
+Choose the odd numbers.
+
+* 1
+* 2
+* 3
+* 4
+* 5
+
++++ {"ctype": "answer", "quesnum": 1}
+
+Answers
+* True
+* False
+* True
+* False
+* True
+
++++ {"ctype": "answer", "quesnum": 1}
+
+This is a multiple answers question. On Canvas, it shows up with square boxes beside the answers and allows the quiz taker to select multiple answers. The truth values of the different answers match up one to one. A similar type of question is the multiple *choice* question, which only allows one answer to be chosen and has circles beside the answers on Canvas.
+
++++ {"ctype": "question", "quesnum": 2, "question_type": "matching_question", "points_possible": 5}
+
+### Question 2
 Match the same words to each other.
 
 Left
@@ -45,7 +69,7 @@ Right
 * apple
 * dog
 
-+++ {"ctype": "answer", "quesnum": 1}
++++ {"ctype": "answer", "quesnum": 2}
 
 Matchings
 
@@ -54,33 +78,9 @@ Matchings
 * 2
 * 6
 
-+++ {"ctype": "answer", "quesnum": 1}
++++ {"ctype": "answer", "quesnum": 2}
 
 The goal of this question is to find the matching words. For example, the first word in the left list (apple) appears in the fifth position in the right list. Because of this, the first value in the answer key is 5. Note also that there are some extra answers in the right list which act as distractors and do not have a pairing. In order for these questions to be parsed correctly, the length of the right list must be at least the length of the left list.
-
-+++ {"ctype": "question", "quesnum": 2, "question_type": "multiple_answers_question"}
-
-### Question 2
-Choose the odd numbers.
-
-* 1
-* 2
-* 3
-* 4
-* 5
-
-+++ {"ctype": "answer", "quesnum": 2}
-
-Answers
-* True
-* False
-* True
-* False
-* True
-
-+++ {"ctype": "answer", "quesnum": 2}
-
-This is a multiple answers question. On Canvas, it shows up with square boxes beside the answers and allows the quiz taker to select multiple answers. The truth values of the different answers match up one to one. A similar type of question is the multiple *choice* question, which only allows one answer to be chosen and has circles beside the answers on Canvas.
 
 +++ {"ctype": "question", "quesnum": 3, "question_type": "short_answer_question"}
 
