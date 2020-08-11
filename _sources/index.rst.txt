@@ -27,16 +27,16 @@ This will likely be improved in the future with the following features:
 
 * Printing quizzes to paginated HTML or PDF
 
-Installation
-------------
-See :ref:`installation`.
+Getting Started
+---------------
+See :ref:`usage`.
 
-Documentation
+For More Info
 -------------
 See :ref:`documentation`.
 
 .. toctree::
    :hidden:
 
-   installation
+   usage
    documentation
