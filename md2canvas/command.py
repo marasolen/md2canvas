@@ -25,10 +25,12 @@ from pathlib import Path
               help="File to dump JSON string to.")
 @click.option("-n", "--no-upload", "no_upload", flag_value=True,
               default=False, help="Set flag to stop uploading of quiz.")
-@click.option("-h", "--hush", "hush", flag_value=True,
-              default=False, help="Set flag to stop printing other than warnings and errors.")
+@click.option("-h", "--hush", "hush", flag_value=True, default=False, 
+              help="Set flag to stop printing other than warnings and errors.")
+@click.option("-r", "--reset", "reset", flag_value=True, default=False, 
+              help="Resets the config file to original values.")
 def md2canvas(url, notebook_file, token, token_file, course_id, save_settings,
-                quiz_id, dump, no_upload, hush):
+                quiz_id, dump, no_upload, hush, reset):
     """
     Parse file into quiz and upload to Canvas.
     """
@@ -66,16 +68,21 @@ def md2canvas(url, notebook_file, token, token_file, course_id, save_settings,
     with open(config_file, "r") as f:
 
         config = yaml.load(f, Loader=yaml.FullLoader)
-        print(config)
 
-        if save_settings:
+        if save_settings or reset:
             if url:
                 config["url"] = url
+            elif reset:
+                config["url"] = "https://canvas.ubc.ca"
             if token:
                 config["token"] = token
+            elif reset:
+                config["token"] = "11224~PLAy00HrlbYVp7a6DV0a6X7pGQ13uLukhxF4ouz3JUeDJ" + \
+                                  "R9dzY0hazkcDOlUuY0t"
             if course_id:
                 config["course_id"] = course_id
-            print(config)
+            elif reset:
+                config["course_id"] = "51824"
             
             with open(config_file, "w") as wf:
                 yaml.dump(config, wf)
