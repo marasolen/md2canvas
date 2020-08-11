@@ -7,4 +7,4 @@ pip install git+https://github.com/maracieco/md2canvas
 ```
 
 ## Usage
-See the documentation [here](https://maracieco.github.io/md2canvas/documentation.html).
+See the documentation [here](https://maracieco.github.io/md2canvas/index.html).
