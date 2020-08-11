@@ -27,32 +27,36 @@ A sample quiz for demonstrations. Includes a matching question, a multiple answe
 +++ {"ctype": "question", "quesnum": 1, "question_type": "matching_question", "points_possible": 5}
 
 ### Question 1
-Match the same letters to each other.
+Match the same words to each other.
 
 Left
 
-* a
-* b
-* c
-* d
+* apple
+* bat
+* cat
+* dog
 
 Right
 
-* a
-* b
-* c
-* d
-* e
-* f
+* frog
+* cat
+* bat
+* exam
+* apple
+* dog
 
 +++ {"ctype": "answer", "quesnum": 1}
 
 Matchings
 
-* 1
-* 2
+* 5
 * 3
-* 4
+* 2
+* 6
+
++++ {"ctype": "answer", "quesnum": 1}
+
+The goal of this question is to find the matching words. For example, the first word in the left list (apple) appears in the fifth position in the right list. Because of this, the first value in the answer key is 5. Note also that there are some extra answers in the right list which act as distractors and do not have a pairing. In order for these questions to be parsed correctly, the length of the right list must be at least the length of the left list.
 
 +++ {"ctype": "question", "quesnum": 2, "question_type": "multiple_answers_question"}
 
@@ -74,6 +78,10 @@ Answers
 * False
 * True
 
++++ {"ctype": "answer", "quesnum": 2}
+
+This is a multiple answers question. On Canvas, it shows up with square boxes beside the answers and allows the quiz taker to select multiple answers. The truth values of the different answers match up one to one. A similar type of question is the multiple *choice* question, which only allows one answer to be chosen and has circles beside the answers on Canvas.
+
 +++ {"ctype": "question", "quesnum": 3, "question_type": "short_answer_question"}
 
 ### Question 3
@@ -87,6 +95,10 @@ Answers
 * overlooks
 * inquiry
 
++++ {"ctype": "answer", "quesnum": 3}
+
+The image included in this question is automatically updloaded to Canvas when md2canvas is run. This means that if you can see it when you preview the markdown or Jupyter Notebook, you will see it on Canvas as well.
+
 +++ {"ctype": "question", "quesnum": 4, "question_type": "numerical_question"}
 
 ### Question 4
@@ -97,3 +109,20 @@ Give your answer to three decimal places.
 +++ {"ctype": "answer", "quesnum": 4}
 
 * 6.283, 3: precision_answer
+
++++ {"ctype": "answer", "quesnum": 4}
+
+Running the following code:
+
+``` 
+import math
+r = 2
+ans = math.pi * r ** 2 / 2
+print("%.3f" % ans)
+```
+
+Prints out the answer:
+
+```
+6.283
+```
