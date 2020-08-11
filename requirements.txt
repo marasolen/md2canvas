@@ -1,6 +1,0 @@
-sphinx_rtd_theme
-canvasapi
-jupytext
-python-dateutil
-markdown
-bs4

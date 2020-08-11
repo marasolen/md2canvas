@@ -1,13 +1,11 @@
 import json
 import click
 from os import path
-from configparser import ConfigParser
+import yaml
 import md2canvas.md2json as m2j
 import md2canvas.json2canvas as j2c
 import md2canvas.util as ut
 from pathlib import Path
-
-NOT_SET = "NOT_SET"
 
 @click.command()
 @click.argument("notebook_file", type=str, nargs=1)
@@ -27,10 +25,12 @@ NOT_SET = "NOT_SET"
               help="File to dump JSON string to.")
 @click.option("-n", "--no-upload", "no_upload", flag_value=True,
               default=False, help="Set flag to stop uploading of quiz.")
-@click.option("-h", "--hush", "hush", flag_value=True,
-              default=False, help="Set flag to stop printing other than warnings and errors.")
+@click.option("-h", "--hush", "hush", flag_value=True, default=False, 
+              help="Set flag to stop printing other than warnings and errors.")
+@click.option("-r", "--reset", "reset", flag_value=True, default=False, 
+              help="Resets the config file to original values.")
 def md2canvas(url, notebook_file, token, token_file, course_id, save_settings,
-                quiz_id, dump, no_upload, hush):
+                quiz_id, dump, no_upload, hush, reset):
     """
     Parse file into quiz and upload to Canvas.
     """
@@ -63,38 +63,43 @@ def md2canvas(url, notebook_file, token, token_file, course_id, save_settings,
         with open(token_file, mode="r") as tf:
             token = tf.read()
 
-    config_file = path.join(path.dirname(path.realpath(__file__)), "config.ini")
+    config_file = path.join(path.dirname(path.realpath(__file__)), "config.yaml")
+    if not path.exists(config_file):
+        with open(config_file, "w") as f:
+            f.close()
+            reset = True
 
-    config = ConfigParser()
-    config.read(config_file)
+    with open(config_file, "r") as f:
 
-    if save_settings:
-        if url:
-            config.set("settings", "url", url)
-        if token:
-            config.set("settings", "token", token)
-        if course_id:
-            config.set("settings", "course_id", course_id)
+        config = yaml.load(f, Loader=yaml.FullLoader)
+        if not config:
+            config = {}
 
-        with open(config_file, "w") as cf:
-            config.write(cf)
+        if save_settings or reset:
+            if url:
+                config["url"] = url
+            elif reset:
+                config["url"] = "https://canvas.ubc.ca"
+            if token:
+                config["token"] = token
+            elif reset:
+                config["token"] = "11224~PLAy00HrlbYVp7a6DV0a6X7pGQ13uLukhxF4ouz3JUeDJ" + \
+                                  "R9dzY0hazkcDOlUuY0t"
+            if course_id:
+                config["course_id"] = course_id
+            elif reset:
+                config["course_id"] = "51824"
+            
+            with open(config_file, "w") as wf:
+                yaml.dump(config, wf)
 
-    if not no_upload:
-        if not url:
-            url = config.get("settings", "url")
-            if url == NOT_SET:
-                print("No URL given or in config file.")
-                return
-        if not token:
-            token = config.get("settings", "token")
-            if token == NOT_SET:
-                print("No token given or in config file.")
-                return
-        if not course_id:
-            course_id = config.get("settings", "course_id")
-            if course_id == NOT_SET:
-                print("No course ID given or in config file.")
-                return
+        if not no_upload:
+            if not url:
+                url = config["url"]
+            if not token:
+                token = config["token"]
+            if not course_id:
+                course_id = str(config["course_id"])
 
     ut.sprint("Parsing the quiz at " + notebook_file)
     quiz = m2j.parse_quiz(notebook_file)
