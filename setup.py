@@ -11,7 +11,7 @@ setup(
         "canvasapi",
         "click",
         "jupytext",
-        "python-dateuntil",
+        "python-dateutil",
         "bs4",
         "sphinx-rtd-theme"
     ],
