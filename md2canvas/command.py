@@ -1,13 +1,11 @@
 import json
 import click
 from os import path
-from configparser import ConfigParser
+import yaml
 import md2canvas.md2json as m2j
 import md2canvas.json2canvas as j2c
 import md2canvas.util as ut
 from pathlib import Path
-
-NOT_SET = "NOT_SET"
 
 @click.command()
 @click.argument("notebook_file", type=str, nargs=1)
@@ -63,38 +61,32 @@ def md2canvas(url, notebook_file, token, token_file, course_id, save_settings,
         with open(token_file, mode="r") as tf:
             token = tf.read()
 
-    config_file = path.join(path.dirname(path.realpath(__file__)), "config.ini")
+    config_file = path.join(path.dirname(path.realpath(__file__)), "config.yaml")
 
-    config = ConfigParser()
-    config.read(config_file)
+    with open(config_file, "r") as f:
 
-    if save_settings:
-        if url:
-            config.set("settings", "url", url)
-        if token:
-            config.set("settings", "token", token)
-        if course_id:
-            config.set("settings", "course_id", course_id)
+        config = yaml.load(f, Loader=yaml.FullLoader)
+        print(config)
 
-        with open(config_file, "w") as cf:
-            config.write(cf)
+        if save_settings:
+            if url:
+                config["url"] = url
+            if token:
+                config["token"] = token
+            if course_id:
+                config["course_id"] = course_id
+            print(config)
+            
+            with open(config_file, "w") as wf:
+                yaml.dump(config, wf)
 
-    if not no_upload:
-        if not url:
-            url = config.get("settings", "url")
-            if url == NOT_SET:
-                print("No URL given or in config file.")
-                return
-        if not token:
-            token = config.get("settings", "token")
-            if token == NOT_SET:
-                print("No token given or in config file.")
-                return
-        if not course_id:
-            course_id = config.get("settings", "course_id")
-            if course_id == NOT_SET:
-                print("No course ID given or in config file.")
-                return
+        if not no_upload:
+            if not url:
+                url = config["url"]
+            if not token:
+                token = config["token"]
+            if not course_id:
+                course_id = str(config["course_id"])
 
     ut.sprint("Parsing the quiz at " + notebook_file)
     quiz = m2j.parse_quiz(notebook_file)
