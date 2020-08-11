@@ -64,10 +64,16 @@ def md2canvas(url, notebook_file, token, token_file, course_id, save_settings,
             token = tf.read()
 
     config_file = path.join(path.dirname(path.realpath(__file__)), "config.yaml")
+    if not path.exists(config_file):
+        with open(config_file, "w") as f:
+            f.close()
+            reset = True
 
     with open(config_file, "r") as f:
 
         config = yaml.load(f, Loader=yaml.FullLoader)
+        if not config:
+            config = {}
 
         if save_settings or reset:
             if url:
