@@ -9,12 +9,15 @@
 #       extension: .py
 #       format_name: percent
 #       format_version: '1.3'
-#       jupytext_version: 1.5.0
+#       jupytext_version: 1.5.2
 #   kernelspec:
 #     display_name: Python 3
 #     language: python
 #     name: python3
 # ---
+
+# %%
+import numpy as np
 
 # %% [markdown]
 # # Test Canvas Quiz
@@ -99,17 +102,11 @@
 # * 6.283, 3: precision_answer
 
 # %% [markdown]
-# Running the following code:
-#
-# ``` 
-# import math
-# r = 2
-# ans = math.pi * r ** 2 / 2
-# print("%.3f" % ans)
-# ```
-#
-# Prints out the answer:
-#
-# ```
-# 6.283
-# ```
+# Check this with python:
+
+# %%
+import math
+r = 2
+ans = math.pi * r ** 2 / 2
+print(f"{ans:.3f}")
+np.testing.assert_almost_equal(ans,6.383,decimals=3)

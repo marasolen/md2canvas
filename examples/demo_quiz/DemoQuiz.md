@@ -7,13 +7,17 @@ jupytext:
   text_representation:
     extension: .md
     format_name: myst
-    format_version: '0.8'
-    jupytext_version: 1.5.0
+    format_version: '0.10'
+    jupytext_version: 1.5.2
 kernelspec:
   display_name: Python 3
   language: python
   name: python3
 ---
+
+```{code-cell} ipython3
+import numpy as np
+```
 
 +++ {"ctype": "quiz", "title": "Demo Quiz", "allowed_attempts": 3, "scoring_policy": "keep_highest", "cant_go_back": false, "shuffle_answers": false}
 
@@ -112,17 +116,15 @@ Give your answer to three decimal places.
 
 +++ {"ctype": "answer", "quesnum": 4}
 
-Running the following code:
+Check this with python:
 
-``` 
+```{code-cell} ipython3
+:ctype: answer
+:quesnum: 4
+
 import math
 r = 2
 ans = math.pi * r ** 2 / 2
-print("%.3f" % ans)
-```
-
-Prints out the answer:
-
-```
-6.283
+print(f"{ans:.3f}")
+np.testing.assert_almost_equal(ans,6.383,decimals=3)
 ```
