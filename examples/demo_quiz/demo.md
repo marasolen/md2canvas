@@ -65,13 +65,21 @@
     ```
 
     And here is a screenshot of it in a Jupyter Notebook:
+
     ![Q1](media/Q1_jn.PNG)
     
     In general, there will be one question cell that contains all the info necessary to understand and solve the question. It will be followed by some answer cells. The first one will be parsed for answer data and must follow specific formatting. The following cells can be anything, so they can be used as descriptions of the answers or code cells for computation or anything really. All of these cells will be stripped by anstrip as long as they are tagged as answer cells in the metadata.
 
-    When this question is part of a quiz that is pushed to Canvas, it looks like this:
+    When this question is part of a quiz that is pushed to Canvas, it looks like this for the student during the quiz:
 
-3. Here is another example that is a matching question:
+    ![Q1](media/Q1_cu.PNG)
+
+    And like this once the quiz has been graded:
+
+    ![Q1](media/Q1_cg.PNG)
+
+
+3. Here is another example that is a matching question, notice that it sets an extra field in the metadata (points_possible) that changes the number of points the question is worth:
     ```
     +++ {"ctype": "question", "quesnum": 2, "question_type": "matching_question", "points_possible": 5}
 
@@ -108,6 +116,9 @@
     The goal of this question is to find the matching words. For example, the first word in the left list (apple) appears in the fifth position in the right list. Because of this, the first value in the answer key is 5. Note also that there are some extra answers in the right list which act as distractors and do not have a pairing. In order for these questions to be parsed correctly, the length of the right list must be at least the length of the left list.
     ```
     ![Q2](media/Q2_jn.PNG)
+    ![Q2](media/Q2_cu.PNG)
+    ![Q2](media/Q2_cu_options.PNG)
+    ![Q2](media/Q2_cg.PNG)
 
 4. This is a simpler type of question called a short answer question:
     ```
@@ -131,6 +142,8 @@
     +++ {"ctype": "question", "quesnum": 4, "question_type": "numerical_question"}
     ```
     ![Q3](media/Q3_jn.PNG)
+    ![Q2](media/Q3_cu.PNG)
+    ![Q2](media/Q3_cg.PNG)
 
 5. Finally, this question shows off LaTeX:
     ~~~
@@ -163,3 +176,5 @@
     ```
     ~~~
     ![Q4](media/Q4_jn.PNG)
+    ![Q2](media/Q4_cu.PNG)
+    ![Q2](media/Q4_cg.PNG)
