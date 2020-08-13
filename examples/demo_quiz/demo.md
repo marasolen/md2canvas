@@ -160,19 +160,17 @@
 
     +++ {"ctype": "answer", "quesnum": 4}
 
-    Running the following code:
+    Check this with python:
 
-    ``` 
+    ```{code-cell} ipython3
+    :ctype: answer
+    :quesnum: 4
+
     import math
     r = 2
     ans = math.pi * r ** 2 / 2
-    print("%.3f" % ans)
-    ```
-
-    Prints out the answer:
-
-    ```
-    6.283
+    print(f"{ans:.3f}")
+    np.testing.assert_almost_equal(ans,6.383,decimals=3)
     ```
     ~~~
     ![Q4](media/Q4_jn.PNG)
