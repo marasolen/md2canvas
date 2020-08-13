@@ -176,3 +176,7 @@
     ![Q4](media/Q4_jn.PNG)
     ![Q2](media/Q4_cu.PNG)
     ![Q2](media/Q4_cg.PNG)
+
+    In the future, we envision that md2canvas will be able to compute the answers just based off the code cells.
+
+6. Other question types also exist. There are examples of all of them in md2canvas/examples/sample_quiz/SampleQuiz.md.
