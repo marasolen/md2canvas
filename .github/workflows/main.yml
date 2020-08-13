@@ -17,7 +17,7 @@ jobs:
         docs-folder: "docs/"
 
     - name: pytest action
-      runs: |
+      run: |
         pytest
         
     - name: GitHub Pages action
