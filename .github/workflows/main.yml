@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: Publish
+name: Test and Publish
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch
@@ -16,16 +16,25 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: ammaraskar/sphinx-action@master
-      with:
-        pre-build-command: "pip install -r requirements.txt; pip install -e .;"
-        docs-folder: "docs/"
-        
+    uses: actions/checkout@v2
+    uses: ammaraskar/sphinx-action@master
+    with:
+      pre-build-command: "pip install -r requirements.txt; pip install -e .;"
+      docs-folder: "docs/"
+
+  test:
+    needs: build
+    name: pytest action
+    steps:
+      run: |
+        pytest
+
+  publish:  
+    needs: build      
     # Push the book's HTML to github-pages
-    - name: GitHub Pages action
-      uses: peaceiris/actions-gh-pages@v3.5.10
-      if: github.event_name == 'push'
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./docs/build/html
+    name: GitHub Pages action
+    uses: peaceiris/actions-gh-pages@v3.5.10
+    if: github.event_name == 'push'
+    with:
+      github_token: ${{ secrets.GITHUB_TOKEN }}
+      publish_dir: ./docs/build/html

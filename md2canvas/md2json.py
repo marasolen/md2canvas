@@ -116,7 +116,6 @@ def parse_weight(weight):
     int
         converted weight
     """
-    print(weight)
     if isinstance(weight, bool):
         if weight: return 100
         else: return 0
@@ -624,7 +623,5 @@ def parse_quiz(nb_file):
         elif start and cell["metadata"]["ctype"] == "group":
             group = parse_group(index)
             quiz["groups"].append(group)
-
-    ut.pprint(quiz)
 
     return quiz

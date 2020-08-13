@@ -6,6 +6,7 @@ import md2canvas.md2json as m2j
 import md2canvas.json2canvas as j2c
 import md2canvas.util as ut
 from pathlib import Path
+import canvasapi as cv
 
 @click.command()
 @click.argument("notebook_file", type=str, nargs=1)
@@ -115,9 +116,9 @@ def md2canvas(url, notebook_file, token, token_file, course_id, save_settings,
         ut.sprint("  Course ID = " + course_id)
         if quiz_id:
             ut.sprint("  Quiz ID = " + quiz_id)
-            j2c.update_quiz(quiz, url, token, course_id, quiz_id)
+            j2c.update_quiz(cv, quiz, url, token, course_id, quiz_id)
         else:
-            j2c.upload_quiz(quiz, url, token, course_id)
+            j2c.upload_quiz(cv, quiz, url, token, course_id)
 
 @click.command()
 @click.argument("old_pynotebook", type=str, nargs=1)

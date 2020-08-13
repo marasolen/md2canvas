@@ -1,5 +1,5 @@
-import canvasapi as cv
 import md2canvas.util as ut
+import ntpath
 
 def update_media(url, folder, media):
     """
@@ -22,9 +22,11 @@ def update_media(url, folder, media):
         ID of folder for given quiz
     """
     folder.upload(media)
+    bn = ntpath.basename(media)
 
     for f in folder.get_files():
-        return url + "/files/" + str(f.id) + "/download?wrap=1"
+        if bn in f.name:
+            return url + "/files/" + str(f.id) + "/download?wrap=1"
 
     return media + "(failed to load)"
 
@@ -117,29 +119,6 @@ def edit_quiz(url, quiz, canvas_quiz, canvas_quiz_folder):
             else:
                 canvas_quiz.create_question(question=question)
 
-def get_course(url, token, course_id):
-    """
-    Retrieve Course from Canvas
-
-    Parameters
-    ----------
-    url: str
-        Canvas URL
-
-    token: str
-        access token
-
-    course_id: str
-        numerical ID of course
-
-    Returns
-    -------
-    Course
-        Course object that hosts quiz
-    """
-    canvas = cv.Canvas(url, token)
-    return canvas.get_course(course_id)
-
 def get_quiz_folder(course, quiz_id):
     """
     Get media folder for this quiz.
@@ -172,12 +151,41 @@ def get_quiz_folder(course, quiz_id):
 
     return quiz_folder
 
-def upload_quiz(quiz, url, token, course_id):
+def get_course(cv, url, token, course_id):
+    """
+    Retrieve Course from Canvas
+
+    Parameters
+    ----------
+    cv: obj
+        Canvas source
+
+    url: str
+        Canvas URL
+
+    token: str
+        access token
+
+    course_id: str
+        numerical ID of course
+
+    Returns
+    -------
+    Course
+        Course object that hosts quiz
+    """
+    canvas = cv.Canvas(url, token)
+    return canvas.get_course(course_id)
+
+def upload_quiz(cv, quiz, url, token, course_id):
     """
     Upload a new quiz.
 
     Parameters
     ----------
+    cv: obj
+        Canvas source
+
     quiz: obj
         parsed quiz data
 
@@ -192,9 +200,10 @@ def upload_quiz(quiz, url, token, course_id):
 
     Returns
     -------
-    None
+    obj
+        the Canvas course object
     """
-    canvas_course = get_course(url, token, course_id)
+    canvas_course = get_course(cv, url, token, course_id)
     canvas_quiz = canvas_course.create_quiz(quiz["attrs"])
     canvas_quiz_folder = get_quiz_folder(canvas_course, str(canvas_quiz.id))
 
@@ -204,13 +213,17 @@ def upload_quiz(quiz, url, token, course_id):
 
     canvas_quiz.edit(quiz=quiz["attrs"])
     edit_quiz(url, quiz, canvas_quiz, canvas_quiz_folder)
+    return canvas_course
 
-def update_quiz(quiz, url, token, course_id, quiz_id):
+def update_quiz(cv, quiz, url, token, course_id, quiz_id):
     """
     Update an existing quiz.
 
     Parameters
     ----------
+    cv: obj
+        Canvas source
+        
     quiz: obj
         parsed quiz data
 
@@ -228,9 +241,10 @@ def update_quiz(quiz, url, token, course_id, quiz_id):
 
     Returns
     -------
-    None
+    obj
+        the Canvas course object
     """
-    canvas_course = get_course(url, token, course_id)
+    canvas_course = get_course(cv, url, token, course_id)
     canvas_quiz = canvas_course.get_quiz(quiz_id)
     canvas_quiz_folder = get_quiz_folder(canvas_course, str(canvas_quiz.id))
     
@@ -240,3 +254,4 @@ def update_quiz(quiz, url, token, course_id, quiz_id):
 
     canvas_quiz.edit(quiz=quiz["attrs"])
     edit_quiz(url, quiz, canvas_quiz, canvas_quiz_folder)
+    return canvas_course

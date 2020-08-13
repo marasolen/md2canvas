@@ -13,7 +13,8 @@ setup(
         "jupytext",
         "python-dateutil",
         "bs4",
-        "sphinx-rtd-theme"
+        "sphinx-rtd-theme",
+        "pytest"
     ],
     entry_points={
         'console_scripts': [
