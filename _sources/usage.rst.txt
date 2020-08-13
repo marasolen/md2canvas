@@ -19,6 +19,6 @@ Installation and Usage
 
     cd md2canvas
 
-5. Send a quiz to your canvas course::
+5. Send a quiz to your canvas course (Critical note here: you must use HTTPS, not HTTP, or weird things happen)::
 
     md2canvas -t <RedactedCanvasToken> -c 45445 -u https://canvas.ubc.ca examples/sample_quiz/SampleQuiz.md
