@@ -16,11 +16,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    uses: actions/checkout@v2
-    uses: ammaraskar/sphinx-action@master
-    with:
-      pre-build-command: "pip install -r requirements.txt; pip install -e .;"
-      docs-folder: "docs/"
+      uses: actions/checkout@v2
+      uses: ammaraskar/sphinx-action@master
+      with:
+        pre-build-command: "pip install -r requirements.txt; pip install -e .;"
+        docs-folder: "docs/"
 
   test:
     needs: build
