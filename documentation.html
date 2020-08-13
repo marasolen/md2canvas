@@ -535,11 +535,12 @@
 
 <dl class="function">
 <dt id="md2canvas.json2canvas.get_course">
-<code class="sig-prename descclassname">md2canvas.json2canvas.</code><code class="sig-name descname">get_course</code><span class="sig-paren">(</span><em class="sig-param">url</em>, <em class="sig-param">token</em>, <em class="sig-param">course_id</em><span class="sig-paren">)</span><a class="headerlink" href="#md2canvas.json2canvas.get_course" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">md2canvas.json2canvas.</code><code class="sig-name descname">get_course</code><span class="sig-paren">(</span><em class="sig-param">cv</em>, <em class="sig-param">url</em>, <em class="sig-param">token</em>, <em class="sig-param">course_id</em><span class="sig-paren">)</span><a class="headerlink" href="#md2canvas.json2canvas.get_course" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieve Course from Canvas</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>cv</strong> (<em>obj</em>) – Canvas source</p></li>
 <li><p><strong>url</strong> (<em>str</em>) – Canvas URL</p></li>
 <li><p><strong>token</strong> (<em>str</em>) – access token</p></li>
 <li><p><strong>course_id</strong> (<em>str</em>) – numerical ID of course</p></li>
@@ -597,11 +598,12 @@
 
 <dl class="function">
 <dt id="md2canvas.json2canvas.update_quiz">
-<code class="sig-prename descclassname">md2canvas.json2canvas.</code><code class="sig-name descname">update_quiz</code><span class="sig-paren">(</span><em class="sig-param">quiz</em>, <em class="sig-param">url</em>, <em class="sig-param">token</em>, <em class="sig-param">course_id</em>, <em class="sig-param">quiz_id</em><span class="sig-paren">)</span><a class="headerlink" href="#md2canvas.json2canvas.update_quiz" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">md2canvas.json2canvas.</code><code class="sig-name descname">update_quiz</code><span class="sig-paren">(</span><em class="sig-param">cv</em>, <em class="sig-param">quiz</em>, <em class="sig-param">url</em>, <em class="sig-param">token</em>, <em class="sig-param">course_id</em>, <em class="sig-param">quiz_id</em><span class="sig-paren">)</span><a class="headerlink" href="#md2canvas.json2canvas.update_quiz" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update an existing quiz.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>cv</strong> (<em>obj</em>) – Canvas source</p></li>
 <li><p><strong>quiz</strong> (<em>obj</em>) – parsed quiz data</p></li>
 <li><p><strong>url</strong> (<em>str</em>) – Canvas URL</p></li>
 <li><p><strong>token</strong> (<em>str</em>) – access token</p></li>
@@ -610,21 +612,22 @@
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
+<dd class="field-even"><p>the Canvas course object</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>None</p>
+<dd class="field-odd"><p>obj</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="md2canvas.json2canvas.upload_quiz">
-<code class="sig-prename descclassname">md2canvas.json2canvas.</code><code class="sig-name descname">upload_quiz</code><span class="sig-paren">(</span><em class="sig-param">quiz</em>, <em class="sig-param">url</em>, <em class="sig-param">token</em>, <em class="sig-param">course_id</em><span class="sig-paren">)</span><a class="headerlink" href="#md2canvas.json2canvas.upload_quiz" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">md2canvas.json2canvas.</code><code class="sig-name descname">upload_quiz</code><span class="sig-paren">(</span><em class="sig-param">cv</em>, <em class="sig-param">quiz</em>, <em class="sig-param">url</em>, <em class="sig-param">token</em>, <em class="sig-param">course_id</em><span class="sig-paren">)</span><a class="headerlink" href="#md2canvas.json2canvas.upload_quiz" title="Permalink to this definition">¶</a></dt>
 <dd><p>Upload a new quiz.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>cv</strong> (<em>obj</em>) – Canvas source</p></li>
 <li><p><strong>quiz</strong> (<em>obj</em>) – parsed quiz data</p></li>
 <li><p><strong>url</strong> (<em>str</em>) – Canvas URL</p></li>
 <li><p><strong>token</strong> (<em>str</em>) – access token</p></li>
@@ -632,10 +635,10 @@
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
+<dd class="field-even"><p>the Canvas course object</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>None</p>
+<dd class="field-odd"><p>obj</p>
 </dd>
 </dl>
 </dd></dl>
