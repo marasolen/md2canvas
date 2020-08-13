@@ -1,4 +1,4 @@
-name: Build, Test, and Publish
+name: Test and Publish
 
 on:
   push:
@@ -7,14 +7,12 @@ on:
     branches: [ master ]
 
 jobs:
-  build-test-publish:
+  test:
+    name: Run pytest
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: ammaraskar/sphinx-action@master
-      with:
-        pre-build-command: "pip install -e ."
-        docs-folder: "docs/"
+    - name: Checkout
+      uses: actions/checkout@v2
 
     - name: Set up Python 3.7
       uses: actions/setup-python@v2
@@ -29,6 +27,15 @@ jobs:
     - name: Test with pytest
       run: |
         python -m pytest -W ignore::DeprecationWarning
+
+  build-publish:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ammaraskar/sphinx-action@master
+      with:
+        pre-build-command: "pip install -e ."
+        docs-folder: "docs/"
         
     - name: GitHub Pages action
       uses: peaceiris/actions-gh-pages@v3.5.10
