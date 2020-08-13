@@ -26,7 +26,7 @@ jobs:
 
     - name: Test with pytest
       run: |
-        python -m pytest -W ignore::DeprecationWarning
+        python -m pytest -W ignore::DeprecationWarning --cov=md2canvas
 
   build-publish:
     runs-on: ubuntu-latest

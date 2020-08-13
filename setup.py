@@ -15,6 +15,7 @@ setup(
         "bs4",
         "sphinx-rtd-theme",
         "pytest",
+        "pytest-cov",
         "myst-parser"
     ],
     entry_points={
