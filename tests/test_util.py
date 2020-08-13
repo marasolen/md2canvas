@@ -7,6 +7,6 @@ def test_strip_cells():
     out_file = "examples/sample_quiz/SampleQuizStripped.md"
     ret_obj = strip_cells(in_file, out_file, "answer")
     file_obj = jp.readf(out_file)
-    assert ret_obj == file_obj
+    assert len(ret_obj["cells"]) == len(file_obj["cells"])
     os.remove(out_file)
                     
