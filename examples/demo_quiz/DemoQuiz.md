@@ -15,10 +15,6 @@ kernelspec:
   name: python3
 ---
 
-```{code-cell} ipython3
-import numpy as np
-```
-
 +++ {"ctype": "quiz", "title": "Demo Quiz", "allowed_attempts": 3, "scoring_policy": "keep_highest", "cant_go_back": false, "shuffle_answers": false}
 
 # Test Canvas Quiz
@@ -122,6 +118,7 @@ Check this with python:
 :ctype: answer
 :quesnum: 4
 
+import numpy as np
 import math
 r = 2
 ans = math.pi * r ** 2 / 2

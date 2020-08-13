@@ -606,8 +606,6 @@ def parse_quiz(nb_file):
     global cells
     cells = nb_obj["cells"]
 
-    print(cells)
-
     start = False
     for index, cell in enumerate(cells):
         if not start and cell["metadata"]["ctype"] == "quiz":

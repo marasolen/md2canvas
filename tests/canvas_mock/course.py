@@ -9,7 +9,6 @@ class Course():
         self.quizzes = []
         self.folders = []
         self.quiz_counter = Counter()
-        print(self.quiz_counter)
 
     def create_quiz(self, attrs):
         quiz = Quiz(self.quiz_counter.get_next_num(), attrs)
