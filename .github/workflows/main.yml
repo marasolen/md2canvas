@@ -28,7 +28,7 @@ jobs:
 
     - name: Test with pytest
       run: |
-        python -m pytest
+        python -m pytest -W ignore::DeprecationWarning
         
     - name: GitHub Pages action
       uses: peaceiris/actions-gh-pages@v3.5.10
