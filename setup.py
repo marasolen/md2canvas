@@ -14,7 +14,8 @@ setup(
         "python-dateutil",
         "bs4",
         "sphinx-rtd-theme",
-        "pytest"
+        "pytest",
+        "myst-parser"
     ],
     entry_points={
         'console_scripts': [
